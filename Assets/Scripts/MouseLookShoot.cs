@@ -1,51 +1,59 @@
 ﻿using System.Collections;
 using UnityEngine;
 
-public class MouseLookShoot : BasePlayer {
+public class MouseLookShoot : BasePlayer
+{
     public float Sens = 2f;
 
     private float _xRot;
     private float _yRot;
 
-	void Update () {
-	    UpdateRecoilTime();
-	    _xRot -= Input.GetAxis("Mouse Y") * Sens;
-	    _yRot += Input.GetAxis("Mouse X") * Sens;
-	    transform.rotation = Quaternion.Euler(_xRot, _yRot, 0);
+    void Update()
+    {
+        UpdateRecoilTime();
+        _xRot -= Input.GetAxis("Mouse Y") * Sens;
+        _yRot += Input.GetAxis("Mouse X") * Sens;
+        transform.rotation = Quaternion.Euler(_xRot, _yRot, 0);
+
+        if (currentEnergy < maxEnergy && !isFiring)
+        {
+            currentEnergy += ChargeSpeed * Time.deltaTime;
+        }
+
 
         SetFiringMode();
         SetValuesByFiringMode(FiringMode);
 
-        if(!FullAuto)
+        if (!FullAuto)
         {
             if (Input.GetMouseButtonDown(0))
             {
-                //inspirert av https://forum.unity3d.com/threads/help-with-burst-fire-script-solved.38040/
                 StartCoroutine(Burst());
             }
         }
-        if(FullAuto)
+        if (FullAuto)
         {
             if (Input.GetMouseButton(0))
             {
-                ShootBullet();
+                isFiring = true;
+                StartCoroutine(Auto());
+            }
+            if (Input.GetMouseButtonUp(0))
+            {
+                isFiring = false;
             }
         }
-	    
-        if (Input.GetKeyDown(KeyCode.R))
+
+        if (Input.GetKeyDown(KeyCode.W))
         {
-            Reload();
+            previousFiringMode = true;
+
         }
-            
-        
-	}
-    //inspirert av https://forum.unity3d.com/threads/help-with-burst-fire-script-solved.38040/
-    IEnumerator Burst()
-    {
-        for(int i = 0; i < FiringCycle; i++)
+        if (Input.GetKeyDown(KeyCode.E))
         {
-            ShootBullet();
-            yield return new WaitForSeconds(RecoilTime);
+            nextFiringMode = true;
         }
     }
+
+
 }

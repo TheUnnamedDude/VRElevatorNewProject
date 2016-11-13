@@ -1,21 +1,38 @@
-﻿using UnityEngine;
+﻿using System.Collections;
+using UnityEngine;
 using Zenject;
 
 public class BasePlayer : MonoBehaviour
 {
-    private float _lastShot;
+
     public float Speed = 10;
     public Transform BarrelOpening;
     public Transform Bullet;
     public Transform ExplosionSphere;
 
-    public int CurrentAmmo;
+    //firing mode variables
+    private float _lastShot;
     public float RecoilTime;
     public int FiringMode;
-    public int FullAmmo;
-    public int TargetsHit;
     public bool FullAuto;
     public int FiringCycle;
+    public float Damage;
+
+    //Energy management variables
+    public float maxEnergy = 100f;
+    public float ChargeSpeed = 20f;
+    public float currentEnergy;
+    public float energyDecrease;
+    public bool isFiring = false;
+
+    public bool nextFiringMode = false;
+    public bool previousFiringMode = false;
+
+    void Start()
+    {
+        currentEnergy = maxEnergy;
+    }
+
 
     public void UpdateRecoilTime()
     {
@@ -25,11 +42,11 @@ public class BasePlayer : MonoBehaviour
 
     public bool ShootBullet()
     {
-        
-        if (CurrentAmmo < 1 || _lastShot < RecoilTime)
+        if (currentEnergy < energyDecrease || _lastShot < RecoilTime)
             return false;
 
-        CurrentAmmo -= 1;
+        currentEnergy -= energyDecrease;
+
         var bullet = (Transform)Instantiate(Bullet, BarrelOpening.position, BarrelOpening.rotation);
         var bulletRigidbody = bullet.GetComponent<Rigidbody>();
         bulletRigidbody.AddForce(BarrelOpening.forward * Speed);
@@ -37,14 +54,15 @@ public class BasePlayer : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(BarrelOpening.position, BarrelOpening.forward, out hit))
         {
+            Debug.Log(hit.transform.gameObject);
+
             var enemy = hit.collider.gameObject.GetComponentInParent<Enemy>();
-            if(FiringMode != 3)
+            if (FiringMode != 3)
             {
                 if (enemy != null)
                 {
-                    Debug.Log("Hit a enemy");
-                    enemy.OnHit(1f);
-                    //TargetsHit += 1;
+                    Debug.Log("Hit an enemy");
+                    enemy.OnHit(Damage);
                 }
                 else
                 {
@@ -55,32 +73,35 @@ public class BasePlayer : MonoBehaviour
             {
                 Instantiate(ExplosionSphere, new Vector3(hit.point.x, hit.point.y, hit.point.z), Quaternion.identity);
             }
-            
-            
             _lastShot = 0;
-            
             return true;
         }
-        
+
         return false;
-
     }
 
-    public bool Reload()
+    /*public bool Reload()
     {
-        CurrentAmmo = FullAmmo;
+        if(currentEnergy < maxEnergy)
+        {
+            
+        }
+        
+        //CurrentAmmo = FullAmmo;
         return true;
-    }
+    }*/
 
     public void SetFiringMode()
     {
-        if(Input.GetKeyDown(KeyCode.E) && (FiringMode < 3))
+        if (nextFiringMode && (FiringMode < 3))
         {
             FiringMode++;
+            nextFiringMode = false;
         }
-        if(Input.GetKeyDown(KeyCode.W) && (FiringMode > 0) )
+        if (previousFiringMode && (FiringMode > 0))
         {
             FiringMode--;
+            previousFiringMode = false;
         }
     }
 
@@ -88,30 +109,58 @@ public class BasePlayer : MonoBehaviour
     {
         if (firingMode == 0)
         {
-            FullAmmo = 6;
+            energyDecrease = 16.66f;
             RecoilTime = 0.1f;
             FullAuto = false;
             FiringCycle = 1;
+            Damage = 2f;
         }
         else if (firingMode == 1)
         {
-            FullAmmo = 30;
+            energyDecrease = 3f;
             RecoilTime = 0.1f;
             FullAuto = true;
+            Damage = 1f;
         }
         else if (firingMode == 2)
         {
-            FullAmmo = 30;
+            energyDecrease = 6f;
             RecoilTime = 0.05f;
             FiringCycle = 3;
             FullAuto = false;
+            Damage = 1.5f;
         }
-        if(FiringMode == 3)
+        if (FiringMode == 3)
         {
-            FullAmmo = 5;
+            energyDecrease = 50f;
             RecoilTime = 0.5f;
             FiringCycle = 1;
             FullAuto = false;
+            Damage = 3f;
+        }
+    }
+    public IEnumerator Burst()
+    {
+        if (!FullAuto)
+        {
+            if (energyDecrease < currentEnergy)
+            {
+                isFiring = true;
+                for (int i = 0; i < FiringCycle; i++)
+                {
+                    ShootBullet();
+                    yield return new WaitForSeconds(RecoilTime);
+                }
+                isFiring = false;
+            }
+        }
+    }
+    public IEnumerator Auto()
+    {
+        if(energyDecrease < currentEnergy)
+        {
+            ShootBullet();
+            yield return new WaitForSeconds(RecoilTime);
         }
     }
 }
