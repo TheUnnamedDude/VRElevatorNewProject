@@ -25,9 +25,6 @@ public class BasePlayer : MonoBehaviour
     public float energyDecrease;
     public bool isFiring = false;
 
-    public bool nextFiringMode = false;
-    public bool previousFiringMode = false;
-
     void Start()
     {
         currentEnergy = maxEnergy;
@@ -93,15 +90,13 @@ public class BasePlayer : MonoBehaviour
 
     public void SetFiringMode()
     {
-        if (nextFiringMode && (FiringMode < 3))
+        if(FiringMode > 3)
         {
-            FiringMode++;
-            nextFiringMode = false;
+            FiringMode = 0;
         }
-        if (previousFiringMode && (FiringMode > 0))
+        if(FiringMode < 0)
         {
-            FiringMode--;
-            previousFiringMode = false;
+            FiringMode = 3;
         }
     }
 

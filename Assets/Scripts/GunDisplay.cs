@@ -23,6 +23,7 @@ public class GunDisplay : MonoBehaviour {
 	void Start () {
         energyBar = GetComponentInChildren<Slider>();
         _basePlayer = GetComponentInParent<BasePlayer>();
+        
     }
 	
 	// Update is called once per frame
@@ -39,26 +40,26 @@ public class GunDisplay : MonoBehaviour {
         {
             case 0:
                 Single.color = Color.green;
-                Auto.color = Color.black;
-                Burst.color = Color.black;
-                Explosive.color = Color.black;
+                Auto.color = Color.clear;
+                Burst.color = Color.clear;
+                Explosive.color = Color.clear;
                 break;
             case 1:
-                Single.color = Color.black;
+                Single.color = Color.clear;
                 Auto.color = Color.green;
-                Burst.color = Color.black;
-                Explosive.color = Color.black;
+                Burst.color = Color.clear;
+                Explosive.color = Color.clear;
                 break;
             case 2:
-                Single.color = Color.black;
-                Auto.color = Color.black;
+                Single.color = Color.clear;
+                Auto.color = Color.clear;
                 Burst.color = Color.green;
-                Explosive.color = Color.black;
+                Explosive.color = Color.clear;
                 break;
             case 3:
-                Single.color = Color.black;
-                Auto.color = Color.black;
-                Burst.color = Color.black;
+                Single.color = Color.clear;
+                Auto.color = Color.clear;
+                Burst.color = Color.clear;
                 Explosive.color = Color.green;
                 break;
         }

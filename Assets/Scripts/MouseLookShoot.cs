@@ -46,12 +46,12 @@ public class MouseLookShoot : BasePlayer
 
         if (Input.GetKeyDown(KeyCode.W))
         {
-            previousFiringMode = true;
+            FiringMode--;
 
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            nextFiringMode = true;
+            FiringMode++;
         }
     }
 

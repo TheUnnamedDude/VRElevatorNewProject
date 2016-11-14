@@ -58,11 +58,11 @@ public class ControllerManager : BasePlayer
         {
             if (device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).x > 0.5f)
             {
-                nextFiringMode = true;
+                FiringMode++;
             }
             if (device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).x < 0.5f)
             {
-                previousFiringMode = true;
+                FiringMode--;
             }
 
         }
