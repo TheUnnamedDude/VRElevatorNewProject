@@ -69,7 +69,6 @@ public class ScoreManager : ITickable
 
     public void FreezeTime(float freezeTime)
     {
-        Debug.Log("Freezing time for " + freezeTime);
         _freezeTime = freezeTime;
     }
 

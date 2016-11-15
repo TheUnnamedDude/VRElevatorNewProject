@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
-using UnityEngine.SocialPlatforms.Impl;
 using Zenject;
 using UnityObject = UnityEngine.Object;
 
@@ -20,7 +19,6 @@ public class LevelGenerator : IInitializable, ITickable
     private readonly Dictionary<ElevatorDirection, List<Enemy>> _enemies = new Dictionary<ElevatorDirection, List<Enemy>>();
     private Dictionary<Enemy, float> _spawnTime = new Dictionary<Enemy, float>();
     private List<Door> doors = new List<Door>();
-    private int _visibleTargets = 0;
     private int _seed;
 
     public int Seed
@@ -118,7 +116,6 @@ public class LevelGenerator : IInitializable, ITickable
         _scoreManager.NextLevel();
 
         var directions = GetElevatorSidesForLevel();
-        Debug.Log("Starting level " + _scoreManager.Level);
 
         var availableDirections = new List<ElevatorDirection>(ALL_DIRECTIONS);
         var spawnableEnemies = new List<Enemy>();
@@ -137,7 +134,7 @@ public class LevelGenerator : IInitializable, ITickable
             var direction = availableDirections[directionIndex];
             var door = GetDoorByDirection(direction);
             door.ScheduleOpen(!doorsOpen);
-            //availableDirections.RemoveAt(directionIndex);
+            availableDirections.RemoveAt(directionIndex);
 
             spawnableEnemies.AddRange(_enemies[direction]);
         }
@@ -157,9 +154,7 @@ public class LevelGenerator : IInitializable, ITickable
             var enemy = spawnableEnemies[_rng.Next(_rng.Next(spawnableEnemies.Count))];
             _spawnTime[enemy] = (float) (_rng.NextDouble() * (_scoreManager.ExpectedLevelTime / 2));
             spawnableEnemies.Remove(enemy);
-            Debug.Log("Spawned " + enemy);
         }
-        Debug.Log("Spawned " + numberOfSpawns + " targets");
     }
 
     private Door GetDoorByDirection(ElevatorDirection direction)
@@ -211,17 +206,17 @@ public class LevelGenerator : IInitializable, ITickable
         }
         if (_scoreManager.Level < 10)
         {
-            return _rng.Next(1, 2);
+            return _rng.Next(1, 3);
         }
         if (_scoreManager.Level < 15)
         {
-            return _rng.Next(1, 3);
+            return _rng.Next(1, 4);
         }
         if (_scoreManager.Level < 20)
         {
-            return _rng.Next(2, 3);
+            return _rng.Next(2, 5);
         }
-        return _scoreManager.Level < 25 ? _rng.Next(3, 4) : 4;
+        return _scoreManager.Level < 25 ? _rng.Next(3, 5) : 4;
     }
 
     public ElevatorDirection GetRandomDirection(List<ElevatorDirection> directions)

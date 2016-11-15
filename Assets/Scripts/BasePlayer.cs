@@ -51,19 +51,12 @@ public class BasePlayer : MonoBehaviour
         RaycastHit hit;
         if (Physics.Raycast(BarrelOpening.position, BarrelOpening.forward, out hit))
         {
-            Debug.Log(hit.transform.gameObject);
-
             var enemy = hit.collider.gameObject.GetComponentInParent<Enemy>();
             if (FiringMode != 3)
             {
                 if (enemy != null)
                 {
-                    Debug.Log("Hit an enemy");
                     enemy.OnHit(Damage);
-                }
-                else
-                {
-                    Debug.Log("Missed :/");
                 }
             }
             else if (FiringMode == 3)
