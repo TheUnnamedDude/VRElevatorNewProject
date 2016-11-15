@@ -9,9 +9,9 @@ public class Enemy : MonoBehaviour
     public float MaxHealth;
     public float AnimationTime;
     private float _animationElapsed;
-    private bool _animationEnded;
     private int _defaultLayer;
     private int _ignoreRaycast;
+    private bool _animationStarted;
 
     private float _health;
 
@@ -29,17 +29,12 @@ public class Enemy : MonoBehaviour
 
     public void Update()
     {
-        if (Alive || _animationEnded)
+        if (Alive || _animationElapsed >= AnimationTime || !_animationStarted)
             return;
 
         _animationElapsed += Time.deltaTime;
-
-        if (_animationElapsed <= AnimationTime)
-            return;
-
-        _animationEnded = true;
-        _gameController.OnTargetDestroy(20f);
         ResetEnemy();
+        _gameController.OnTargetDestroy(20f);
     }
 
 
@@ -51,15 +46,16 @@ public class Enemy : MonoBehaviour
         if (_health > 0)
             return;
         Alive = false;
+        _animationStarted = true;
         // Run animation then reset
         GetComponentInChildren<Animator>().SetTrigger("OnKilled");
     }
 
     public void ResetEnemy()
     {
+        _animationStarted = false;
         Alive = false;
         _health = MaxHealth;
-        _animationEnded = false;
         _animationElapsed = 0;
         foreach (var rendr in _renderers)
         {

@@ -8,6 +8,8 @@ public class ScoreManager : ITickable
     private float _targetScore;
     private float _timeElapsed;
     private float _timeLimit;
+    private float _timeFreezed;
+    private float _freezeTime;
     public float TimePointsLevelModifier = 0.2f;
     public float TimePointsPerSecond = 10.0f;
     public float TargetPointsLevelModifier = 0.2f;
@@ -29,6 +31,7 @@ public class ScoreManager : ITickable
 
     public void AddTargetScore(float score)
     {
+        Debug.Log("Adding level score");
         _targetScore += score * TargetPointsLevelModifier;
     }
 
@@ -48,11 +51,26 @@ public class ScoreManager : ITickable
 
     public void Tick()
     {
-        _timeElapsed += Time.deltaTime;
-        TimeElapsedForLevel += Time.deltaTime;
+        if (_freezeTime > 0)
+        {
+            _timeFreezed += Time.deltaTime;
+            if (_timeFreezed >= _freezeTime)
+            {
+                _freezeTime = 0;
+                _timeFreezed = 0;
+            }
+        }
+        else
+        {
+            _timeElapsed += Time.deltaTime;
+            TimeElapsedForLevel += Time.deltaTime;
+        }
     }
 
-
+    public void FreezeTime(float freezeTime)
+    {
+        _freezeTime = freezeTime;
+    }
 
     private float CalculateLevelTimeScore()
     {
