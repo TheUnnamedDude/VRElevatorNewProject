@@ -29,10 +29,14 @@ public class Enemy : MonoBehaviour
 
     public void Update()
     {
-        if (Alive || _animationElapsed >= AnimationTime || !_animationStarted)
+        if (Alive || !_animationStarted)
             return;
 
         _animationElapsed += Time.deltaTime;
+
+        if (_animationElapsed >= AnimationTime)
+            return;
+
         ResetEnemy();
         _gameController.OnTargetDestroy(20f);
     }
