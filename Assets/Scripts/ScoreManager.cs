@@ -28,10 +28,10 @@ public class ScoreManager : ITickable
     public float TimeElapsedForLevel { get; private set; }
 
     public float ExpectedLevelTime { get; private set; }
+    public bool Freezed { get { return _freezeTime > 0; } }
 
     public void AddTargetScore(float score)
     {
-        Debug.Log("Adding level score");
         _targetScore += score * TargetPointsLevelModifier;
     }
 
@@ -69,6 +69,7 @@ public class ScoreManager : ITickable
 
     public void FreezeTime(float freezeTime)
     {
+        Debug.Log("Freezing time for " + freezeTime);
         _freezeTime = freezeTime;
     }
 

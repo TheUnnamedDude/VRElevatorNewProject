@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using UnityEngine;
+using UnityEngine.SocialPlatforms.Impl;
 using Zenject;
 using UnityObject = UnityEngine.Object;
 
@@ -18,6 +19,7 @@ public class LevelGenerator : IInitializable, ITickable
     private System.Random _rng;
     private readonly Dictionary<ElevatorDirection, List<Enemy>> _enemies = new Dictionary<ElevatorDirection, List<Enemy>>();
     private Dictionary<Enemy, float> _spawnTime = new Dictionary<Enemy, float>();
+    private List<Door> doors = new List<Door>();
     private int _visibleTargets = 0;
     private int _seed;
 
@@ -65,11 +67,14 @@ public class LevelGenerator : IInitializable, ITickable
         {
             _enemies[enemy.Direction].Add(enemy);
         }
+        doors.AddRange(UnityObject.FindObjectsOfType<Door>());
         Reset();
     }
 
     public void Tick()
     {
+        if (_scoreManager.Freezed)
+            return;
         var enemiesRemoved = new List<Enemy>();
         foreach (var pair in _spawnTime)
         {
@@ -117,16 +122,36 @@ public class LevelGenerator : IInitializable, ITickable
 
         var availableDirections = new List<ElevatorDirection>(ALL_DIRECTIONS);
         var spawnableEnemies = new List<Enemy>();
+        bool doorsOpen = false;
+        foreach (var door in doors)
+        {
+            if (door.Open)
+            {
+                door.ScheduleClose();
+                doorsOpen = true;
+            }
+        }
         for (var i = 0; i < directions; i++)
         {
             var directionIndex = _rng.Next(availableDirections.Count);
             var direction = availableDirections[directionIndex];
+            var door = GetDoorByDirection(direction);
+            door.ScheduleOpen(!doorsOpen);
             //availableDirections.RemoveAt(directionIndex);
 
             spawnableEnemies.AddRange(_enemies[direction]);
         }
         var numberOfSpawns = GetTargetSpawnsForLevel();
         _spawnTime = new Dictionary<Enemy, float>();
+        var northDoor = GetDoorByDirection(ElevatorDirection.North);
+        if (doorsOpen)
+        {
+            _scoreManager.FreezeTime(northDoor.OpeningTimeOffset + northDoor.AnimationTime);
+        }
+        else
+        {
+            _scoreManager.FreezeTime(northDoor.OpeningTimeOffset);
+        }
         for (var i = 0; i < Math.Min(numberOfSpawns, spawnableEnemies.Count); i++)
         {
             var enemy = spawnableEnemies[_rng.Next(_rng.Next(spawnableEnemies.Count))];
@@ -135,6 +160,18 @@ public class LevelGenerator : IInitializable, ITickable
             Debug.Log("Spawned " + enemy);
         }
         Debug.Log("Spawned " + numberOfSpawns + " targets");
+    }
+
+    private Door GetDoorByDirection(ElevatorDirection direction)
+    {
+        foreach (var door in doors)
+        {
+            if (door.Direction == direction)
+            {
+                return door;
+            }
+        }
+        return null;
     }
 
     private int GetTargetSpawnsForLevel()

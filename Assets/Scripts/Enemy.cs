@@ -29,12 +29,12 @@ public class Enemy : MonoBehaviour
 
     public void Update()
     {
-        if (Alive || !_animationStarted)
+        if (!_animationStarted)
             return;
 
         _animationElapsed += Time.deltaTime;
 
-        if (_animationElapsed >= AnimationTime)
+        if (_animationElapsed <= AnimationTime)
             return;
 
         ResetEnemy();
