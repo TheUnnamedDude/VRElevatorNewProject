@@ -25,28 +25,33 @@ public class ControllerManager : BasePlayer
         UpdateRecoilTime();
         device = SteamVR_Controller.Input((int)_trackedObject.index);
 
+        SetFiringMode();
+        SetValuesByFiringMode(FiringMode);
+
         if (currentEnergy < maxEnergy && !isFiring)
         {
             currentEnergy += ChargeSpeed * Time.deltaTime;
         }
-
-        SetFiringMode();
-        SetValuesByFiringMode(FiringMode);
-
 
         if (!FullAuto)
         {
             if (device.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
             {
                 StartCoroutine(Burst());
+                _audio.PlayOneShot(Shot, 1f);
+                device.TriggerHapticPulse(3999);
+                GetComponent<AudioSource>().PlayOneShot(Cock, 1f);
             }
         }
         if (FullAuto)
         {
-            if (device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
+            if(device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
             {
                 isFiring = true;
                 ShootBullet();
+                _audio.PlayOneShot(Shot, 1f);
+                device.TriggerHapticPulse(3999);
+                GetComponent<AudioSource>().PlayOneShot(Cock, 1f);
             }
             if (device.GetPressUp(SteamVR_Controller.ButtonMask.Trigger))
             {
@@ -67,8 +72,6 @@ public class ControllerManager : BasePlayer
 
         }
 
-        _audio.PlayOneShot(Shot, 1f);
-        device.TriggerHapticPulse(3999);
-        GetComponent<AudioSource>().PlayOneShot(Cock, 1f);
+       
     }
 }

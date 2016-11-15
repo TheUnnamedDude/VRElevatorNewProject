@@ -15,14 +15,15 @@ public class MouseLookShoot : BasePlayer
         _yRot += Input.GetAxis("Mouse X") * Sens;
         transform.rotation = Quaternion.Euler(_xRot, _yRot, 0);
 
+        SetFiringMode();
+        SetValuesByFiringMode(FiringMode);
+
         if (currentEnergy < maxEnergy && !isFiring)
         {
             currentEnergy += ChargeSpeed * Time.deltaTime;
         }
 
-
-        SetFiringMode();
-        SetValuesByFiringMode(FiringMode);
+        
 
         if (!FullAuto)
         {
