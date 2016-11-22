@@ -4,7 +4,7 @@ using UnityEngine;
 using Zenject;
 using UnityObject = UnityEngine.Object;
 
-public class LevelGenerator : IInitializable, ITickable
+public class LevelGenerator : ITickable
 {
     private readonly ElevatorDirection[] ALL_DIRECTIONS = {ElevatorDirection.North, ElevatorDirection.East,
             ElevatorDirection.South, ElevatorDirection.West};
@@ -55,7 +55,7 @@ public class LevelGenerator : IInitializable, ITickable
         }
     }
 
-    public void Initialize()
+    public void InitializeGame()
     {
         foreach (var direction in ALL_DIRECTIONS)
         {

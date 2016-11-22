@@ -9,14 +9,16 @@ public class GunDisplay : MonoBehaviour {
 
 
     Slider energyBar;
+    public Image energyBarFill;
     public Text ammovalue;
     public Text Single;
     public Text Auto;
     public Text Burst;
     public Text Explosive;
+    
     int shotsLeft;
 
-    //Color active = new Color(233, 169, 32);
+	Color GUIColor;
     
 
 	// Use this for initialization
@@ -28,6 +30,7 @@ public class GunDisplay : MonoBehaviour {
 	
 	// Update is called once per frame
 	void Update () {
+		changeGuiColor();
         shotsLeft = (int) (_basePlayer.currentEnergy / _basePlayer.energyDecrease);
         UpdateGunDisplay();
 	}
@@ -36,33 +39,44 @@ public class GunDisplay : MonoBehaviour {
     {
         energyBar.value = _basePlayer.currentEnergy;
         ammovalue.text = shotsLeft.ToString();
+
         switch(_basePlayer.FiringMode)
         {
             case 0:
-                Single.color = Color.green;
-                Auto.color = Color.clear;
-                Burst.color = Color.clear;
-                Explosive.color = Color.clear;
+				Single.enabled = true;
+                Auto.enabled = false;
+                Burst.enabled = false;
+                Explosive.enabled = false;
                 break;
             case 1:
-                Single.color = Color.clear;
-                Auto.color = Color.green;
-                Burst.color = Color.clear;
-                Explosive.color = Color.clear;
-                break;
+				Single.enabled = false;
+				Auto.enabled = true;
+				Burst.enabled = false;
+				Explosive.enabled = false;
+				break;
             case 2:
-                Single.color = Color.clear;
-                Auto.color = Color.clear;
-                Burst.color = Color.green;
-                Explosive.color = Color.clear;
-                break;
+				Single.enabled = false;
+				Auto.enabled = false;
+				Burst.enabled = true;
+				Explosive.enabled = false;
+				break;
             case 3:
-                Single.color = Color.clear;
-                Auto.color = Color.clear;
-                Burst.color = Color.clear;
-                Explosive.color = Color.green;
-                break;
+				Single.enabled = false;
+				Auto.enabled = false;
+				Burst.enabled = false;
+				Explosive.enabled = true;
+				break;
         }
         
     }
+	void changeGuiColor() {
+        GUIColor = Color.Lerp(Color.red, Color.green, (_basePlayer.currentEnergy / 100));
+        Single.color = GUIColor;
+        Auto.color = GUIColor;
+        Burst.color = GUIColor;
+        Explosive.color = GUIColor;
+        ammovalue.color = GUIColor;
+        energyBarFill.color = GUIColor;
+        
+	}
 }
