@@ -3,7 +3,7 @@ using Zenject;
 
 public class ProjectileFromShootbackTarget : Enemy
 {
-    private float speed = 25;
+    public float speed = 5;
     private Vector3 TargetPath;
     public AudioSource LoopingProjectileSound;
 
@@ -22,6 +22,7 @@ public class ProjectileFromShootbackTarget : Enemy
 
     private void Shoot()
     {
+        gameObject.transform.LookAt(TargetPath);
         float step = speed * Time.deltaTime;
         gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, TargetPath, step);
         if (gameObject.transform.position == TargetPath) //TODO: Add logic for if hit targetPath
