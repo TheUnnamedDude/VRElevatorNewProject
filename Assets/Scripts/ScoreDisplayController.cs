@@ -19,10 +19,14 @@ public class ScoreDisplayController : MonoBehaviour {
     }
 
     public void UpdateScoreboardText() {
-        var seconds = (int)_scoreManager.TimeLeft;
-        var milliseconds = (int)(_scoreManager.TimeLeft % 1 * 100);
         ScoreText.text = string.Format(ScoreFormat, _scoreManager.Score);
-        TimeleftText.text = string.Format(TimeLeftFormat, seconds, milliseconds);
+		if (_scoreManager.GameOver) {
+			TimeleftText.text = "Game over.";
+		} else {
+			var seconds = (int)_scoreManager.TimeLeft;
+			var milliseconds = (int)(_scoreManager.TimeLeft % 1 * 100);
+			TimeleftText.text = string.Format(TimeLeftFormat, seconds, milliseconds);
+		}
         LevelText.text = string.Format(LevelTextFormat, _scoreManager.Level);
     }
 }

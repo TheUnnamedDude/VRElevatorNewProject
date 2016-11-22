@@ -20,9 +20,10 @@ public class GameController : ITickable
 
     public void Tick ()
     {
-        if (_scoreManager.GameOver)
+        if (_scoreManager.GameOver && IsRunning)
         {
-              // TODO: Redo this
+			// TODO: Redo this
+			_running = false;
         }
         if (_slowMotionTimeLeft <= 0)
         {

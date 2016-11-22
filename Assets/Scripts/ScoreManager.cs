@@ -23,7 +23,7 @@ public class ScoreManager : ITickable
         set { _timeElapsed = TimeLeft - value; }
     }
 
-    public bool GameOver { get { return TimeLeft > 0; }}
+    public bool GameOver { get { return TimeLeft <= 0; }}
 
     public float TimeElapsedForLevel { get; private set; }
 
@@ -61,8 +61,10 @@ public class ScoreManager : ITickable
             }
         }
         else
-        {
-            _timeElapsed += Time.deltaTime;
+		{
+			if (GameOver)
+				return;
+			_timeElapsed += Time.deltaTime;
             TimeElapsedForLevel += Time.deltaTime;
         }
     }
