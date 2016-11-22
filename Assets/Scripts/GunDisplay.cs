@@ -77,6 +77,5 @@ public class GunDisplay : MonoBehaviour {
         Explosive.color = GUIColor;
         ammovalue.color = GUIColor;
         energyBarFill.color = GUIColor;
-        
 	}
 }

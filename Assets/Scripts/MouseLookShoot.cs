@@ -8,6 +8,8 @@ public class MouseLookShoot : BasePlayer
     private float _xRot;
     private float _yRot;
 
+
+
     void Update()
     {
         UpdateRecoilTime();
@@ -23,6 +25,7 @@ public class MouseLookShoot : BasePlayer
             currentEnergy += ChargeSpeed * Time.deltaTime;
         }
 
+        Lazer.enabled = isFiring;
         
 
         if (!FullAuto)
@@ -34,7 +37,7 @@ public class MouseLookShoot : BasePlayer
         }
         if (FullAuto)
         {
-            if (Input.GetMouseButton(0))
+            if (Input.GetMouseButtonDown(0))
             {
                 isFiring = true;
                 StartCoroutine(Auto());
