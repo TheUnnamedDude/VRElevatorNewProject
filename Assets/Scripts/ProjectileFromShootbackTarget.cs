@@ -1,34 +1,33 @@
 ﻿using UnityEngine;
 using Zenject;
 
-public class ProjectileFromShootbackTarget : Enemy
+public class ProjectileFromShootbackTarget : MonoBehaviour
 {
+    private bool _shot;
     public float speed = 5;
-    private Vector3 TargetPath;
+    public GameObject _target;
     public AudioSource LoopingProjectileSound;
 
     void Start()
     {
-        LoopingProjectileSound.Play();
-        TargetPath = GameObject.FindGameObjectWithTag("Player").transform.position;
-        Time.timeScale = 0.50f;
+        //LoopingProjectileSound.Play();
     }
 
     void Update()
     {
-        base.Update();
-        Shoot();
+        if (_target != null)
+        {
+            float step = speed * Time.deltaTime;
+            gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, _target.transform.position, step);
+            if (gameObject.transform.position == _target.transform.position) //TODO: Add logic for if hit targetPath
+            {
+                //reduce time left by 5 sec on stage
+            }
+        }
     }
 
-    private void Shoot()
+    public void ShootAt(GameObject target)
     {
-        gameObject.transform.LookAt(TargetPath);
-        float step = speed * Time.deltaTime;
-        gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, TargetPath, step);
-        if (gameObject.transform.position == TargetPath) //TODO: Add logic for if hit targetPath
-        {
-            Time.timeScale = 1f;
-            //Damage player or reduce time left on stage
-        }
+        _target = target;
     }
 }
