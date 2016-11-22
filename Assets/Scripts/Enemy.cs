@@ -1,7 +1,7 @@
 ﻿using UnityEngine;
 using Zenject;
 
-public class Enemy : MonoBehaviour
+public class Enemy : MonoBehaviour, Shootable
 {
     [Inject]
     private GameController _gameController;

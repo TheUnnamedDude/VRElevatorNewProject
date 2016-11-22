@@ -59,14 +59,20 @@ public class LevelGenerator : ITickable
     {
         foreach (var direction in ALL_DIRECTIONS)
         {
+            Debug.Log(direction);
             _enemies[direction] = new List<Enemy>();
         }
         foreach (var enemy in UnityObject.FindObjectsOfType<Enemy>())
         {
+            if (!_enemies.ContainsKey(enemy.Direction)) {
+                Debug.LogWarning("Unmapped direction on enemy " + enemy);
+                continue;
+            }
             _enemies[enemy.Direction].Add(enemy);
         }
         doors.AddRange(UnityObject.FindObjectsOfType<Door>());
         Reset();
+        FinishLevel();
     }
 
     public void Tick()
@@ -101,7 +107,12 @@ public class LevelGenerator : ITickable
     public void Reset()
     {
         _rng = new System.Random(Seed);
-        FinishLevel();
+        foreach (var door in doors) {
+            if (door.Open)
+            {
+                door.Open = false;
+            }
+        }
     }
 
     public void FinishLevel()

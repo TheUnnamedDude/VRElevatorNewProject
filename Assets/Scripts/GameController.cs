@@ -8,14 +8,13 @@ public class GameController : ITickable
 
     [Inject]
     private LevelGenerator _levelGenerator;
-
-    private bool _running = true;
+    
     private float _slowMotionTimeLeft;
 
     public bool IsRunning
     {
-        get { return _running; }
-        set { _running = value;  }
+        get;
+        private set;
     }
 
     public void Tick ()
@@ -23,13 +22,18 @@ public class GameController : ITickable
         if (_scoreManager.GameOver && IsRunning)
         {
             // TODO: Redo this
-            _running = false;
+            IsRunning = false;
         }
         if (_slowMotionTimeLeft <= 0)
         {
             _slowMotionTimeLeft -= Time.deltaTime;
             Time.timeScale = 1f;
         }
+    }
+   
+    public void StartGame() {
+        IsRunning = true;
+        _levelGenerator.InitializeGame();
     }
 
     public void SetSlowMotion(float time)
