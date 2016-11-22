@@ -22,8 +22,8 @@ public class GameController : ITickable
     {
         if (_scoreManager.GameOver && IsRunning)
         {
-			// TODO: Redo this
-			_running = false;
+            // TODO: Redo this
+            _running = false;
         }
         if (_slowMotionTimeLeft <= 0)
         {

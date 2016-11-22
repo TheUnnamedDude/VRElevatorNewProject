@@ -61,10 +61,10 @@ public class ScoreManager : ITickable
             }
         }
         else
-		{
-			if (GameOver)
-				return;
-			_timeElapsed += Time.deltaTime;
+        {
+            if (GameOver)
+                return;
+            _timeElapsed += Time.deltaTime;
             TimeElapsedForLevel += Time.deltaTime;
         }
     }
