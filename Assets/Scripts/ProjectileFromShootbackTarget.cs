@@ -1,7 +1,8 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 using Zenject;
 
-public class ProjectileFromShootbackTarget : MonoBehaviour
+public class ProjectileFromShootbackTarget : MonoBehaviour, Shootable
 {
     private bool _shot;
     public float speed = 5;
@@ -29,5 +30,10 @@ public class ProjectileFromShootbackTarget : MonoBehaviour
     public void ShootAt(GameObject target)
     {
         _target = target;
+    }
+
+    public void OnHit(float damage)
+    {
+        Destroy(gameObject);
     }
 }
