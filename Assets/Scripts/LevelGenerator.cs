@@ -147,7 +147,13 @@ public class LevelGenerator : ITickable
             door.ScheduleOpen(!doorsOpen);
             availableDirections.RemoveAt(directionIndex);
 
-            spawnableEnemies.AddRange(_enemies[direction]);
+            foreach (var enemy in _enemies[direction])
+            {
+                if (_scoreManager.Level >= enemy.MinSpawnLevel)
+                {
+                    spawnableEnemies.Add(enemy);
+                }
+            }
         }
         var numberOfSpawns = GetTargetSpawnsForLevel();
         _spawnTime = new Dictionary<Enemy, float>();

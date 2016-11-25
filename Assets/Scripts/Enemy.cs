@@ -8,6 +8,8 @@ public class Enemy : MonoBehaviour, Shootable
     private Renderer[] _renderers;
     public float MaxHealth;
     public float AnimationTime;
+    public int MinSpawnLevel;
+
     private float _animationElapsed;
     private int _defaultLayer;
     private int _ignoreRaycast;
