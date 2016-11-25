@@ -34,6 +34,6 @@ public class ProjectileFromShootbackTarget : MonoBehaviour, Shootable
 
     public void OnHit(float damage)
     {
-        Destroy(gameObject.transform.parent);
+        Destroy(gameObject);
     }
 }
