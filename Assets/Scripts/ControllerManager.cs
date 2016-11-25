@@ -16,12 +16,13 @@ public class ControllerManager : BasePlayer
     {
         _trackedObject = GetComponent<SteamVR_TrackedObject>();
         _audio = GetComponent<AudioSource>();
+        base.Start();
     }
 
     // Update is called once per frame
     void Update()
     {
-
+        Lazer.enabled = isFiring;
         UpdateRecoilTime();
         device = SteamVR_Controller.Input((int)_trackedObject.index);
 
@@ -48,7 +49,7 @@ public class ControllerManager : BasePlayer
             if(device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
             {
                 isFiring = true;
-                ShootBullet();
+                StartCoroutine(Auto());
                 _audio.PlayOneShot(Shot, 1f);
                 device.TriggerHapticPulse(3999);
                 GetComponent<AudioSource>().PlayOneShot(Cock, 1f);

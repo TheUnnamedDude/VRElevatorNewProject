@@ -19,6 +19,7 @@ public class ShootbackEnemy : Enemy
     void Start()
     {
         LockOnTargetSound();
+        
     }
 
     void Update()
@@ -48,7 +49,8 @@ public class ShootbackEnemy : Enemy
     private void ShootProjectile()
     {
         GameObject projectile = (GameObject) Instantiate(Projectile, Missileport.transform.position, gameObject.transform.rotation, transform);
+        Debug.Log("Rockets AWAAAAAAY!");
         projectile.transform.LookAt(_target.transform.position);
-        projectile.GetComponent<ProjectileFromShootbackTarget>().ShootAt(_target);
+        projectile.GetComponent<ProjectileFromShootbackTarget>().ShootAt(_target.transform.position);
     }
 }

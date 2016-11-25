@@ -28,7 +28,7 @@ public class BasePlayer : MonoBehaviour
     public LineRenderer Lazer;
     Ray ray;
 
-    void Start()
+    public void Start()
     {
         currentEnergy = maxEnergy;
         Lazer = GetComponent<LineRenderer>();
