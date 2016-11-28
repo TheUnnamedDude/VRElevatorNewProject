@@ -8,12 +8,13 @@ public class MenuHandler : MonoBehaviour, Shootable {
 
 	public MenuAction Action;
 	public Text text;
+    public GameObject helpCanvas;
 	
     [Inject]
     private GameController _gameController;
-
-	bool isPaused = false;
-
+    private LevelGenerator _levelGenerator;
+	
+    
 
 	void OnTriggerEnter(Collider other) {
 		if (other.tag == "Controller")
@@ -38,25 +39,25 @@ public class MenuHandler : MonoBehaviour, Shootable {
             case MenuAction.Quit:
                 Application.Quit();
                 return;
-            case MenuAction.Pause:
-                if (!isPaused)
-                {
-                    Time.timeScale = 0f;
-                }
-                else
-                {
-                    Time.timeScale = 1f;
-                }
+            case MenuAction.Restart:
+                _levelGenerator.Reset();
+                _gameController.StartGame();
                 return;
             case MenuAction.Help:
-                //Spawn help canvas (and pause?)
+                if(!helpCanvas.activeInHierarchy)
+                {
+                    helpCanvas.SetActive(true);
+                } else
+                {
+                    helpCanvas.SetActive(false);
+                }
                 return;
         }
     }
 
     public enum MenuAction {
 		Quit,
-		Pause,
+		Restart,
 		Start,
 		Help
 	}

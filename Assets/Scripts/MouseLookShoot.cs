@@ -8,6 +8,8 @@ public class MouseLookShoot : BasePlayer
     private float _xRot;
     private float _yRot;
 
+    public GameObject Menu;
+    bool menuActive;
 
 
     void Update()
@@ -56,6 +58,10 @@ public class MouseLookShoot : BasePlayer
         if (Input.GetKeyDown(KeyCode.E))
         {
             FiringMode++;
+        }
+        if(Input.GetKeyDown(KeyCode.R))
+        {
+            Menu.SetActive(!Menu.activeInHierarchy);
         }
     }
 
