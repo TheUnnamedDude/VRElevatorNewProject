@@ -36,6 +36,13 @@ public class GameController : ITickable
         _levelGenerator.InitializeGame();
     }
 
+    public void ResetGame()
+    {
+        IsRunning = false;
+        _scoreManager.Reset();
+        _levelGenerator.Reset();
+    }
+
     public void SetSlowMotion(float time)
     {
         _slowMotionTimeLeft = time;
