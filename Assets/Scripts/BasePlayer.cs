@@ -56,10 +56,8 @@ public class BasePlayer : MonoBehaviour
         if (Physics.Raycast(ray, out hit))
         {
             Lazer.SetPosition(1, hit.point);
-            var shootable = hit.collider.gameObject.GetComponentInParent<Shootable>();
-            if (shootable == null) {
-                shootable = hit.collider.gameObject.GetComponent<Shootable>();
-            }
+            var shootable = GetShootable(hit.collider.transform);
+            Debug.Log(shootable);
             if (FiringMode != 3)
             {
                 if (shootable != null)
@@ -75,6 +73,20 @@ public class BasePlayer : MonoBehaviour
         else {
             Lazer.SetPosition(1, ray.GetPoint(100));
         }
+    }
+
+    private Shootable GetShootable(Transform hitpoint, bool checkChildren=true)
+    {
+        var shootable = hitpoint.GetComponent<Shootable>();
+        if (shootable != null)
+            return shootable;
+        if (checkChildren && hitpoint.childCount > 0)
+        {
+            var shootables = hitpoint.GetComponentsInChildren<Shootable>();
+            if (shootables.Length > 0)
+                return shootables[0];
+        }
+        return hitpoint.transform.parent == null ? null : GetShootable(hitpoint.parent, false);
     }
 
 
