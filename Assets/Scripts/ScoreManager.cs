@@ -35,13 +35,13 @@ public class ScoreManager : ITickable
         _targetScore += score * TargetPointsLevelModifier;
     }
 
-    public void NextLevel()
+    public void NextLevel(int numberOfEnemies)
     {
         Level++;
         _timeScore += CalculateLevelTimeScore();
         TimeElapsedForLevel = 0;
-        ExpectedLevelTime = GetTimeForLevel();
-        _timeLimit += GetTimeForLevel();
+        ExpectedLevelTime = GetTimeForLevel(numberOfEnemies);
+        _timeLimit += GetTimeForLevel(numberOfEnemies);
     }
 
     public bool IsTestLevel()
@@ -88,9 +88,9 @@ public class ScoreManager : ITickable
     /// Calculate the time you gain for finishing the current level
     /// </summary>
     /// <returns>A float representing the time you gained in seconds</returns>
-    private float GetTimeForLevel()
+    private float GetTimeForLevel(int numberOfEnemies)
     {
-        return 14.0f;
+        return 0.5f * numberOfEnemies + 15;
     }
 
     public void Reset()
