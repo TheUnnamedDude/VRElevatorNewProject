@@ -9,8 +9,13 @@ public class MouseLookShoot : BasePlayer
     private float _yRot;
 
     public GameObject Menu;
-    bool menuActive;
+    private GunDisplay _gunDisplay;
 
+    void Start()
+    {
+        base.Start();
+        _gunDisplay = GetComponentInChildren<GunDisplay>();
+    }
 
     void Update()
     {
@@ -19,6 +24,7 @@ public class MouseLookShoot : BasePlayer
         _yRot += Input.GetAxis("Mouse X") * Sens;
         transform.rotation = Quaternion.Euler(_xRot, _yRot, 0);
 
+        _gunDisplay.changeMenuAction();
         SetFiringMode();
         SetValuesByFiringMode(FiringMode);
 
@@ -52,16 +58,35 @@ public class MouseLookShoot : BasePlayer
 
         if (Input.GetKeyDown(KeyCode.W))
         {
-            FiringMode--;
+            if(_gunDisplay.GunMode)
+            {
+                FiringMode--;
+            } else
+            {
+                _gunDisplay.MenuAction--;
+            }
+            
 
         }
         if (Input.GetKeyDown(KeyCode.E))
         {
-            FiringMode++;
+            if(_gunDisplay.GunMode)
+            {
+                FiringMode++;
+            }
+            else
+            {
+                _gunDisplay.MenuAction++;
+            }
+            
         }
         if(Input.GetKeyDown(KeyCode.R))
         {
-            Menu.SetActive(!Menu.activeInHierarchy);
+            _gunDisplay.GunMode = !_gunDisplay.GunMode;
+        }
+        if(!_gunDisplay.GunMode && Input.GetKeyDown(KeyCode.F))
+        {
+            _gunDisplay.HandleAction();
         }
     }
 

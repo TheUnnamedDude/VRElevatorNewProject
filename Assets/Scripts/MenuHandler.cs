@@ -4,7 +4,7 @@ using Zenject;
 using UnityEngine.UI;
 using System;
 
-public class MenuHandler : MonoBehaviour, Shootable {
+public class MenuHandler : MonoBehaviour {
 
 	public MenuAction Action;
 	public Text text;
@@ -13,20 +13,8 @@ public class MenuHandler : MonoBehaviour, Shootable {
     [Inject]
     private GameController _gameController;
     private LevelGenerator _levelGenerator;
-	
-    
 
-	void OnTriggerEnter(Collider other) {
-		if (other.tag == "Controller")
-		{
-            HandleAction();
-		}
-	}
 
-    public void OnHit(float damage)
-    {
-        HandleAction();
-    }
 
     public void HandleAction() {
         if (_gameController.IsRunning)
@@ -40,17 +28,10 @@ public class MenuHandler : MonoBehaviour, Shootable {
                 Application.Quit();
                 return;
             case MenuAction.Restart:
-                _levelGenerator.Reset();
-                _gameController.StartGame();
+                _gameController.ResetGame();
                 return;
             case MenuAction.Help:
-                if(!helpCanvas.activeInHierarchy)
-                {
-                    helpCanvas.SetActive(true);
-                } else
-                {
-                    helpCanvas.SetActive(false);
-                }
+                helpCanvas.SetActive(!helpCanvas.activeInHierarchy);
                 return;
         }
     }

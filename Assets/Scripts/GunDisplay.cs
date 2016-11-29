@@ -5,8 +5,12 @@ using UnityEngine.UI;
 
 public class GunDisplay : MonoBehaviour {
 
-    private BasePlayer _basePlayer;
+    [Inject]
+    private GameController _gameController;
 
+    private BasePlayer _basePlayer;
+    public int MenuAction;
+    public GameObject helpCanvas;
 
     Slider energyBar;
     public Image energyBarFill;
@@ -15,20 +19,23 @@ public class GunDisplay : MonoBehaviour {
     public Text Auto;
     public Text Burst;
     public Text Explosive;
-    
+    public Text RightArrow;
+    public Text LeftArrow;
+    public Text MenuIcon;
+    public Text MenuText;
     int shotsLeft;
 
 	Color GUIColor;
-    
+
+    public bool GunMode = true;
 
 	// Use this for initialization
 	void Start () {
+        MenuAction = 0;
         energyBar = GetComponentInChildren<Slider>();
         _basePlayer = GetComponentInParent<BasePlayer>();
-        
     }
 	
-	// Update is called once per frame
 	void Update () {
 		changeGuiColor();
         shotsLeft = (int) (_basePlayer.currentEnergy / _basePlayer.energyDecrease);
@@ -39,35 +46,67 @@ public class GunDisplay : MonoBehaviour {
     {
         energyBar.value = _basePlayer.currentEnergy;
         ammovalue.text = shotsLeft.ToString();
-
-        switch(_basePlayer.FiringMode)
+        if(GunMode)
         {
-            case 0:
-				Single.enabled = true;
-                Auto.enabled = false;
-                Burst.enabled = false;
-                Explosive.enabled = false;
-                break;
-            case 1:
-				Single.enabled = false;
-				Auto.enabled = true;
-				Burst.enabled = false;
-				Explosive.enabled = false;
-				break;
-            case 2:
-				Single.enabled = false;
-				Auto.enabled = false;
-				Burst.enabled = true;
-				Explosive.enabled = false;
-				break;
-            case 3:
-				Single.enabled = false;
-				Auto.enabled = false;
-				Burst.enabled = false;
-				Explosive.enabled = true;
-				break;
+            MenuText.enabled = false;
+            Single.enabled = true;
+            Auto.enabled = true;
+            Burst.enabled = true;
+            Explosive.enabled = true;
+            energyBar.enabled = true;
+            ammovalue.enabled = true;
+            switch (_basePlayer.FiringMode)
+            {
+                case 0:
+                    Single.enabled = true;
+                    Auto.enabled = false;
+                    Burst.enabled = false;
+                    Explosive.enabled = false;
+                    break;
+                case 1:
+                    Single.enabled = false;
+                    Auto.enabled = true;
+                    Burst.enabled = false;
+                    Explosive.enabled = false;
+                    break;
+                case 2:
+                    Single.enabled = false;
+                    Auto.enabled = false;
+                    Burst.enabled = true;
+                    Explosive.enabled = false;
+                    break;
+                case 3:
+                    Single.enabled = false;
+                    Auto.enabled = false;
+                    Burst.enabled = false;
+                    Explosive.enabled = true;
+                    break;
+            }
+        } else if(!GunMode)
+        {
+            Single.enabled = false;
+            Auto.enabled = false;
+            Burst.enabled = false;
+            Explosive.enabled = false;
+            energyBar.enabled = false;
+            ammovalue.enabled = false;
+            MenuText.enabled = true;
+            switch(MenuAction)
+            {
+                case 0:
+                    MenuText.text = "Start";
+                    break;
+                case 1:
+                    MenuText.text = "Restart";
+                    break;
+                case 2:
+                    MenuText.text = "Help";
+                    break;
+                case 3:
+                    MenuText.text = "Quit";
+                    break;
+            }
         }
-        
     }
 	void changeGuiColor() {
         GUIColor = Color.Lerp(Color.red, Color.green, (_basePlayer.currentEnergy / 100));
@@ -77,5 +116,41 @@ public class GunDisplay : MonoBehaviour {
         Explosive.color = GUIColor;
         ammovalue.color = GUIColor;
         energyBarFill.color = GUIColor;
-	}
+        RightArrow.color = GUIColor;
+        LeftArrow.color = GUIColor;
+        MenuIcon.color = GUIColor;
+        MenuText.color = GUIColor;
+    }
+
+    public void changeMenuAction()
+    {
+        if(MenuAction > 3)
+        {
+            MenuAction = 0;
+        }
+        if(MenuAction < 0)
+        {
+            MenuAction = 3;
+        }
+    }
+    public void HandleAction()
+    {
+        if (_gameController.IsRunning)
+            return;
+        switch (MenuAction)
+        {
+            case 0:
+                _gameController.StartGame();
+                return;
+            case 1:
+                _gameController.ResetGame();
+                return;
+            case 2:
+                helpCanvas.SetActive(!helpCanvas.activeSelf);
+                return;
+            case 3:
+                Application.Quit();
+                return;
+        }
+    }
 }
