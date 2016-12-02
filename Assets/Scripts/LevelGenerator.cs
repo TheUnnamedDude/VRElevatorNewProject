@@ -19,8 +19,8 @@ public class LevelGenerator : ITickable
 
     private System.Random _rng;
     private readonly Dictionary<ElevatorDirection, List<Enemy>> _enemies = new Dictionary<ElevatorDirection, List<Enemy>>();
-    private List<SpawnEvent> _spawnTime = new List<SpawnEvent>();
-    private List<Door> doors = new List<Door>();
+    private readonly List<SpawnEvent> _spawnTime = new List<SpawnEvent>();
+    private readonly List<Door> _doors = new List<Door>();
     private int _seed;
 
     public int Seed
@@ -50,7 +50,6 @@ public class LevelGenerator : ITickable
                     if (enemy.Alive)
                     {
                         count++;
-                        Debug.Log(enemy.gameObject);
                     }
                 }
             }
@@ -62,7 +61,6 @@ public class LevelGenerator : ITickable
     {
         foreach (var direction in ALL_DIRECTIONS)
         {
-            Debug.Log(direction);
             _enemies[direction] = new List<Enemy>();
         }
         foreach (var enemy in UnityObject.FindObjectsOfType<Enemy>())
@@ -73,7 +71,7 @@ public class LevelGenerator : ITickable
             }
             _enemies[enemy.Direction].Add(enemy);
         }
-        doors.AddRange(UnityObject.FindObjectsOfType<Door>());
+        _doors.AddRange(UnityObject.FindObjectsOfType<Door>());
         Reset();
         FinishLevel();
     }
@@ -90,25 +88,29 @@ public class LevelGenerator : ITickable
         {
             _spawnTime.First(e => !e.Enemy.Alive).Execute();
         }
-
-        foreach (var e in _spawnTime)
-        {
-            Debug.Log("Event " + e.Enemy + " " + e.Enemy.Direction + " " + e.Enemy.transform.position);
-        }
-        Debug.Log("Before " + _spawnTime.Count);
-        Debug.Log("Removed  " + _spawnTime.RemoveAll(e => e.Executed));
-        Debug.Log("After " + _spawnTime.Count);
     }
 
     public void Reset()
     {
         _rng = new System.Random(Seed);
-        foreach (var door in doors) {
+        foreach (var door in _doors) {
             if (door.Open)
             {
                 door.Open = false;
             }
         }
+    }
+
+    public bool CloseDoors()
+    {
+        var closedAnyDoors = false;
+        _doors.Where(d => d.Open)
+            .ForEach(door =>
+            {
+                door.ScheduleClose();
+                closedAnyDoors = true;
+            });
+        return closedAnyDoors;
     }
 
     public void FinishLevel()
@@ -124,13 +126,7 @@ public class LevelGenerator : ITickable
 
         var availableDirections = new List<ElevatorDirection>(ALL_DIRECTIONS);
         var spawnableEnemies = new List<Enemy>();
-        bool doorsOpen = false;
-        doors.Where(d => d.Open)
-            .ForEach(door =>
-            {
-                door.ScheduleClose();
-                doorsOpen = false;
-            });
+        var doorsOpen = CloseDoors();
         for (var i = 0; i < directions; i++)
         {
             var directionIndex = _rng.Next(availableDirections.Count);
@@ -139,13 +135,7 @@ public class LevelGenerator : ITickable
             door.ScheduleOpen(!doorsOpen);
             availableDirections.RemoveAt(directionIndex);
 
-            foreach (var enemy in _enemies[direction])
-            {
-                if (_scoreManager.Level >= enemy.MinSpawnLevel)
-                {
-                    spawnableEnemies.Add(enemy);
-                }
-            }
+            spawnableEnemies.AddRange(_enemies[direction].Where(enemy => _scoreManager.Level >= enemy.MinSpawnLevel));
         }
         _spawnTime.Clear();
         var northDoor = GetDoorByDirection(ElevatorDirection.North);
@@ -168,7 +158,7 @@ public class LevelGenerator : ITickable
 
     private Door GetDoorByDirection(ElevatorDirection direction)
     {
-        foreach (var door in doors)
+        foreach (var door in _doors)
         {
             if (door.Direction == direction)
             {

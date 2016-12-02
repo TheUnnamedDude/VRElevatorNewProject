@@ -29,6 +29,7 @@ public class GunDisplay : MonoBehaviour {
 	Color GUIColor;
 
     public bool GunMode = true;
+    private bool _restartMode;
 
 	// Use this for initialization
 	void Start () {
@@ -38,13 +39,24 @@ public class GunDisplay : MonoBehaviour {
     }
 	
 	void Update () {
-		changeGuiColor();
+		ChangeGuiColor();
         shotsLeft = (int) (_basePlayer.currentEnergy / _basePlayer.energyDecrease);
-        UpdateGunDisplay();
 	}
 
     public void UpdateGunDisplay()
     {
+        if (_restartMode)
+        {
+            Single.enabled = false;
+            Auto.enabled = false;
+            Burst.enabled = false;
+            Explosive.enabled = false;
+            energyBar.enabled = false;
+            ammovalue.enabled = false;
+            MenuText.enabled = true;
+            MenuText.text = "Restart";
+            return;
+        }
         energyBar.value = _basePlayer.currentEnergy;
         ammovalue.text = shotsLeft.ToString();
         if(GunMode)
@@ -109,7 +121,7 @@ public class GunDisplay : MonoBehaviour {
             }
         }
     }
-	void changeGuiColor() {
+	void ChangeGuiColor() {
         GUIColor = Color.Lerp(Color.red, Color.green, (_basePlayer.currentEnergy / 100));
         Single.color = GUIColor;
         Auto.color = GUIColor;
@@ -121,9 +133,10 @@ public class GunDisplay : MonoBehaviour {
         LeftArrow.color = GUIColor;
         MenuIcon.color = GUIColor;
         MenuText.color = GUIColor;
+	    UpdateGunDisplay();
     }
 
-    public void changeMenuAction()
+    public void ChangeMenuAction()
     {
         if(MenuAction > 3)
         {
@@ -133,15 +146,18 @@ public class GunDisplay : MonoBehaviour {
         {
             MenuAction = 3;
         }
+        UpdateGunDisplay();
     }
     public void HandleAction()
     {
+        if (_restartMode)
+        {
+            _gameController.Restart();
+        }
         switch (MenuAction)
         {
             case 1:
-                //_gameController.ResetGame();
-                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
-                Debug.Log("Restart pressed");
+                _gameController.Restart();
                 return;
             case 3:
                 Application.Quit();
@@ -165,5 +181,11 @@ public class GunDisplay : MonoBehaviour {
                 helpCanvas.SetActive(!helpCanvas.activeSelf);
                 return;
         }
+    }
+
+    public void RestartMode()
+    {
+        _restartMode = true;
+        UpdateGunDisplay();
     }
 }

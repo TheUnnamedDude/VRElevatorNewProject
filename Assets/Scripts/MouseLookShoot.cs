@@ -22,7 +22,7 @@ public class MouseLookShoot : BasePlayer
         _yRot += Input.GetAxis("Mouse X") * Sens;
         transform.rotation = Quaternion.Euler(_xRot, _yRot, 0);
 
-        _gunDisplay.changeMenuAction();
+        _gunDisplay.ChangeMenuAction();
         SetFiringMode();
         SetValuesByFiringMode(FiringMode);
 

@@ -1,4 +1,6 @@
-﻿using UnityEngine;
+﻿using UnityEditor.MemoryProfiler;
+using UnityEngine;
+using UnityEngine.SceneManagement;
 using Zenject;
 
 public class GameController : ITickable
@@ -21,15 +23,32 @@ public class GameController : ITickable
     {
         if (_scoreManager.GameOver && IsRunning)
         {
-            // TODO: Redo this
-            IsRunning = false;
-            Debug.Log("Is game over yes hello");
+            GameOver();
         }
         if (_slowMotionTimeLeft <= 0)
         {
             _slowMotionTimeLeft -= Time.deltaTime;
             Time.timeScale = 1f;
         }
+    }
+
+    public void GameOver()
+    {
+        foreach (var rocket in Object.FindObjectsOfType<ProjectileFromShootbackTarget>())
+        {
+            Object.Destroy(rocket.gameObject);
+        }
+        foreach (var enemy in Object.FindObjectsOfType<Enemy>())
+        {
+            enemy.Kill();
+        }
+        foreach (var controller in Object.FindObjectsOfType<GunDisplay>())
+        {
+            controller.RestartMode();
+        }
+        _levelGenerator.CloseDoors();
+        // TODO: Redo this
+        IsRunning = false;
     }
    
     public void StartGame() {
@@ -52,11 +71,21 @@ public class GameController : ITickable
 
     public void OnTargetDestroy(float points)
     {
+        if (_scoreManager.GameOver)
+        {
+            return;
+        }
         _scoreManager.AddTargetScore(points); // TODO: Pass target type
         Debug.Log(_levelGenerator.NumberOfTargetsAlive);
         if (_levelGenerator.NumberOfTargetsAlive <= 0)
         {
             _levelGenerator.FinishLevel();
         }
+    }
+
+    public void Restart()
+    {
+        SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+        Debug.Log("Restart pressed");
     }
 }

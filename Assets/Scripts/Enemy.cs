@@ -63,6 +63,13 @@ public class Enemy : MonoBehaviour, Shootable
         _health -= damage;
         if (_health > 0)
             return;
+        Kill();
+    }
+
+    public void Kill()
+    {
+        if (!Alive)
+            return;
         _animationStarted = true;
         // Run animation then reset
         Alive = false;

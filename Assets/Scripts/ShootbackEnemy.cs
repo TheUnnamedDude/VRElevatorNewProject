@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using Zenject;
 
 public class ShootbackEnemy : Enemy
 {
@@ -7,6 +8,8 @@ public class ShootbackEnemy : Enemy
     public AudioClip TargetLockSound;
     public GameObject Missileport;
     private GameObject _target;
+    [Inject]
+    private ScoreManager _scoreManager;
 
     public override void Awake()
     {
@@ -17,7 +20,7 @@ public class ShootbackEnemy : Enemy
     public override void Update()
     {
         base.Update();
-        if (Alive)
+        if (Alive && !_scoreManager.GameOver)
         {
             TargetPlayer();
         }
