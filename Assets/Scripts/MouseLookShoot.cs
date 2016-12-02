@@ -31,8 +31,6 @@ public class MouseLookShoot : BasePlayer
         {
             currentEnergy += ChargeSpeed * Time.deltaTime;
         }
-
-        Lazer.enabled = IsFiring;
         
 
         if (!FullAuto)
@@ -46,7 +44,6 @@ public class MouseLookShoot : BasePlayer
         {
             if (Input.GetMouseButtonDown(0))
             {
-                IsFiring = true;
                 StartCoroutine(Auto());
             }
             if (Input.GetMouseButtonUp(0))

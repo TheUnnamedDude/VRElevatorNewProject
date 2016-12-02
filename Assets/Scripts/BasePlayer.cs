@@ -174,8 +174,11 @@ public class BasePlayer : MonoBehaviour
     }
     public IEnumerator Auto()
     {
-        while (energyDecrease < currentEnergy && IsFiring)
+        IsFiring = true;
+        while (IsFiring)
         {
+            if (currentEnergy < energyDecrease)
+                IsFiring = false;
             ShootBullet();
             yield return new WaitForSeconds(RecoilTime);
         }

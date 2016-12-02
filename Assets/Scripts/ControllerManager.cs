@@ -39,7 +39,6 @@ public class ControllerManager : BasePlayer
         {
             if (FullAuto)
             {
-                IsFiring = true;
                 StartCoroutine(Auto());
                 _audio.PlayOneShot(Shot, 1f);
                 device.TriggerHapticPulse(3999);
