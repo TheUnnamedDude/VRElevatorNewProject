@@ -88,6 +88,7 @@ public class LevelGenerator : ITickable
         {
             _spawnTime.First(e => !e.Enemy.Alive).Execute();
         }
+        _spawnTime.RemoveAll(e => e.Executed);
     }
 
     public void Reset()
