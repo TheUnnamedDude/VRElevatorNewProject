@@ -2,6 +2,7 @@
 using System.Collections;
 using Zenject;
 using UnityEngine.UI;
+using UnityEngine.SceneManagement;
 
 public class GunDisplay : MonoBehaviour {
 
@@ -135,21 +136,33 @@ public class GunDisplay : MonoBehaviour {
     }
     public void HandleAction()
     {
-        if (_gameController.IsRunning)
-            return;
+        switch (MenuAction)
+        {
+            case 1:
+                //_gameController.ResetGame();
+                SceneManager.LoadScene(SceneManager.GetActiveScene().buildIndex);
+                Debug.Log("Restart pressed");
+                return;
+            case 3:
+                Application.Quit();
+                return;
+        }
+        if (!_gameController.IsRunning)
+        {
+            HandleNonRunningMenuActions();
+        }
+    }
+
+    public void HandleNonRunningMenuActions()
+    {
+
         switch (MenuAction)
         {
             case 0:
                 _gameController.StartGame();
                 return;
-            case 1:
-                _gameController.ResetGame();
-                return;
             case 2:
                 helpCanvas.SetActive(!helpCanvas.activeSelf);
-                return;
-            case 3:
-                Application.Quit();
                 return;
         }
     }

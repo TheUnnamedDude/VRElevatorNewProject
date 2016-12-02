@@ -8,7 +8,6 @@ public class MouseLookShoot : BasePlayer
     private float _xRot;
     private float _yRot;
 
-    public GameObject Menu;
     private GunDisplay _gunDisplay;
 
     void Start()
