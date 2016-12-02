@@ -1,11 +1,11 @@
 ﻿using UnityEngine;
-using Zenject;
 
 public class ControllerManager : BasePlayer
 {
 
     private SteamVR_TrackedObject _trackedObject;
     private SteamVR_Controller.Device device;
+    private GunDisplay _gunDisplay;
 
     public AudioClip Shot;
     public AudioClip Cock;
@@ -16,6 +16,8 @@ public class ControllerManager : BasePlayer
     {
         _trackedObject = GetComponent<SteamVR_TrackedObject>();
         _audio = GetComponent<AudioSource>();
+        _gunDisplay = GetComponentInChildren<GunDisplay>();
+        device = SteamVR_Controller.Input((int)_trackedObject.index);
         base.Start();
     }
 
@@ -24,7 +26,6 @@ public class ControllerManager : BasePlayer
     {
         Lazer.enabled = isFiring;
         UpdateRecoilTime();
-        device = SteamVR_Controller.Input((int)_trackedObject.index);
 
         SetFiringMode();
         SetValuesByFiringMode(FiringMode);
@@ -34,19 +35,9 @@ public class ControllerManager : BasePlayer
             currentEnergy += ChargeSpeed * Time.deltaTime;
         }
 
-        if (!FullAuto)
+        if (device.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
         {
-            if (device.GetPressDown(SteamVR_Controller.ButtonMask.Trigger))
-            {
-                StartCoroutine(Burst());
-                _audio.PlayOneShot(Shot, 1f);
-                device.TriggerHapticPulse(3999);
-                GetComponent<AudioSource>().PlayOneShot(Cock, 1f);
-            }
-        }
-        if (FullAuto)
-        {
-            if(device.GetPress(SteamVR_Controller.ButtonMask.Trigger))
+            if (FullAuto)
             {
                 isFiring = true;
                 StartCoroutine(Auto());
@@ -54,25 +45,48 @@ public class ControllerManager : BasePlayer
                 device.TriggerHapticPulse(3999);
                 GetComponent<AudioSource>().PlayOneShot(Cock, 1f);
             }
-            if (device.GetPressUp(SteamVR_Controller.ButtonMask.Trigger))
+            else
             {
-                isFiring = false;
+                StartCoroutine(Burst());
+                _audio.PlayOneShot(Shot, 1f);
+                device.TriggerHapticPulse(3999);
+                GetComponent<AudioSource>().PlayOneShot(Cock, 1f);
             }
         }
+        else if (device.GetPressUp(SteamVR_Controller.ButtonMask.Trigger))
+        {
+            isFiring = false;
+        }
 
+        CheckTouchpad();
+    }
+
+    void CheckTouchpad()
+    {
         if (device.GetPressDown(SteamVR_Controller.ButtonMask.Touchpad))
         {
-            if (device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).x > 0.5f)
+            Vector2 touchPoint = device.GetAxis(Valve.VR.EVRButtonId.k_EButton_Axis0);
+            Debug.Log(touchPoint);
+            if (touchPoint.y < -0.5f)
             {
-                FiringMode++;
+                _gunDisplay.GunMode = !_gunDisplay.GunMode;
+                return;
             }
-            if (device.GetAxis(Valve.VR.EVRButtonId.k_EButton_SteamVR_Touchpad).x < 0.5f)
+            if (touchPoint.x < 0.5f && touchPoint.x > -0.5f)
             {
-                FiringMode--;
+                return;
+            }
+
+            if (_gunDisplay.GunMode)
+            {
+                FiringMode += (int)Mathf.Round(touchPoint.x);
+            }
+            else
+            {
+                _gunDisplay.MenuAction += (int)Mathf.Round(touchPoint.x);
             }
 
         }
-
-       
     }
+
 }
