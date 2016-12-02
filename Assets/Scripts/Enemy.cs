@@ -54,7 +54,7 @@ public class Enemy : MonoBehaviour, Shootable
         Alive = false;
         _animationStarted = true;
         // Run animation then reset
-        GetComponentInChildren<Animator>().SetTrigger("OnKilled");
+        GetComponentInChildren<Animator>().SetBool("Dead", true);
     }
 
     public void ResetEnemy()
@@ -87,5 +87,6 @@ public class Enemy : MonoBehaviour, Shootable
         {
             child.gameObject.layer = _defaultLayer;
         }
+        GetComponentInChildren<Animator>().SetBool("Dead", false);
     }
 }
