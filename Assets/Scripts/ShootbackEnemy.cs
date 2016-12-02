@@ -1,28 +1,20 @@
 ﻿using UnityEngine;
-using Zenject;
 
 public class ShootbackEnemy : Enemy
 {
     public float Timer;
     public GameObject Projectile;
-    private AudioSource _targetLock;
+    public AudioClip TargetLockSound;
     public GameObject Missileport;
     private GameObject _target;
 
-    void Awake()
+    public override void Awake()
     {
         base.Awake();
-        _targetLock = GetComponent<AudioSource>();
         _target = GameObject.FindGameObjectWithTag("Player");
     }
 
-    void Start()
-    {
-        LockOnTargetSound();
-        
-    }
-
-    void Update()
+    public override void Update()
     {
         base.Update();
         if (Alive)
@@ -33,7 +25,7 @@ public class ShootbackEnemy : Enemy
 
     private void LockOnTargetSound()
     {
-        _targetLock.Play();
+        MainAudioSource.PlayOneShot(TargetLockSound);
     }
 
     private void TargetPlayer()

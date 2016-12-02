@@ -52,6 +52,7 @@ public class GameController : ITickable
     public void OnTargetDestroy(float points)
     {
         _scoreManager.AddTargetScore(points); // TODO: Pass target type
+        Debug.Log(_levelGenerator.NumberOfTargetsAlive);
         if (_levelGenerator.NumberOfTargetsAlive <= 0)
         {
             _levelGenerator.FinishLevel();

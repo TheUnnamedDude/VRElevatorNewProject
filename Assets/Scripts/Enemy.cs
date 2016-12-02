@@ -9,11 +9,16 @@ public class Enemy : MonoBehaviour, Shootable
     public float MaxHealth;
     public float AnimationTime;
     public int MinSpawnLevel;
+    public AudioClip SpawnSound;
 
     private float _animationElapsed;
     private int _defaultLayer;
     private int _ignoreRaycast;
     private bool _animationStarted;
+    private AudioSource[] _audioSources;
+    private int _audioSourceIndex;
+
+    public AudioSource MainAudioSource { private set; get; }
 
     private float _health;
 
@@ -21,15 +26,17 @@ public class Enemy : MonoBehaviour, Shootable
 
     public bool Alive { get; private set; }
 
-    public void Awake()
+    public virtual void Awake()
     {
         _renderers = GetComponentsInChildren<Renderer>();
         _defaultLayer = gameObject.layer;
         _ignoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
+        _audioSources = GetComponents<AudioSource>();
+        MainAudioSource = NextAudioSource();
         ResetEnemy();
     }
 
-    public void Update()
+    public virtual void Update()
     {
         if (!_animationStarted)
             return;
@@ -39,30 +46,39 @@ public class Enemy : MonoBehaviour, Shootable
         if (_animationElapsed <= AnimationTime)
             return;
 
+        _animationStarted = false;
+        _animationElapsed = 0;
+
+        if (Alive)
+            return;
         ResetEnemy();
         _gameController.OnTargetDestroy(20f);
     }
 
 
-    public void OnHit(float damage)
+    public virtual void OnHit(float damage)
     {
         if (!Alive)
             return;
         _health -= damage;
         if (_health > 0)
             return;
-        Alive = false;
         _animationStarted = true;
         // Run animation then reset
+        Alive = false;
         GetComponentInChildren<Animator>().SetBool("Dead", true);
     }
 
-    public void ResetEnemy()
+    public AudioSource NextAudioSource()
     {
-        _animationStarted = false;
+        return _audioSourceIndex >= _audioSources.Length ?
+            null : _audioSources[_audioSourceIndex++];
+    }
+
+    public virtual void ResetEnemy()
+    {
         Alive = false;
         _health = MaxHealth;
-        _animationElapsed = 0;
         foreach (var rendr in _renderers)
         {
             rendr.enabled = false;
@@ -73,12 +89,10 @@ public class Enemy : MonoBehaviour, Shootable
             child.gameObject.layer = _ignoreRaycast;
         }
     }
-    public void Show()
+    public virtual void Show()
     {
-        Debug.Log("Showing");
         foreach (var rendr in _renderers)
         {
-            Debug.Log(rendr);
             rendr.enabled = true;
         }
         Alive = true;
@@ -88,5 +102,14 @@ public class Enemy : MonoBehaviour, Shootable
             child.gameObject.layer = _defaultLayer;
         }
         GetComponentInChildren<Animator>().SetBool("Dead", false);
+        if (MainAudioSource != null && SpawnSound != null)
+        {
+            MainAudioSource.PlayOneShot(SpawnSound);
+        }
+    }
+
+    public bool IsAnimationRunning()
+    {
+        return _animationStarted;
     }
 }

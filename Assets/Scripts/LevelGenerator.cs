@@ -50,6 +50,7 @@ public class LevelGenerator : ITickable
                     if (enemy.Alive)
                     {
                         count++;
+                        Debug.Log(enemy.gameObject);
                     }
                 }
             }
@@ -79,7 +80,7 @@ public class LevelGenerator : ITickable
 
     public void Tick()
     {
-        if (_scoreManager.Freezed || _scoreManager.TimeElapsedForLevel > 0 || _spawnTime.IsEmpty())
+        if (_scoreManager.Freezed || _scoreManager.TimeElapsedForLevel < 0 || _spawnTime.IsEmpty())
             return;
         _spawnTime
             .Where(e => !e.Enemy.Alive && e.SpawnTime <= _scoreManager.TimeElapsedForLevel)
@@ -90,7 +91,13 @@ public class LevelGenerator : ITickable
             _spawnTime.First(e => !e.Enemy.Alive).Execute();
         }
 
-        _spawnTime.RemoveAll(e => e.Executed);
+        foreach (var e in _spawnTime)
+        {
+            Debug.Log("Event " + e.Enemy + " " + e.Enemy.Direction + " " + e.Enemy.transform.position);
+        }
+        Debug.Log("Before " + _spawnTime.Count);
+        Debug.Log("Removed  " + _spawnTime.RemoveAll(e => e.Executed));
+        Debug.Log("After " + _spawnTime.Count);
     }
 
     public void Reset()

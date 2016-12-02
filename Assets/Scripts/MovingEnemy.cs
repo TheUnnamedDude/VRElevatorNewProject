@@ -2,12 +2,22 @@
 
 public class MovingEnemy : Enemy
 {
+    public AudioClip MovingSound;
     public float speed = 25;
     private Vector3 _path;
     public bool OnTheMove;
     public Transform EnemyModel;
     public GameObject DestinationPath;
     private Vector3 _startPosition;
+    private AudioSource _movingAudioSource;
+
+    public override void Awake()
+    {
+        base.Awake();
+        _movingAudioSource = NextAudioSource();
+        _movingAudioSource.clip = MovingSound;
+        _movingAudioSource.loop = true;
+    }
     
     void Start()
     {
@@ -15,10 +25,10 @@ public class MovingEnemy : Enemy
         _path = DestinationPath.transform.position;
     }
 
-    void Update()
+    public override void Update()
     {
         base.Update();
-        if (Alive) {
+        if (Alive && IsAnimationRunning()) {
             Movement();
         }
     }
@@ -42,5 +52,20 @@ public class MovingEnemy : Enemy
                 OnTheMove = false;
             }
         }
+    }
+
+    public override void ResetEnemy()
+    {
+        base.ResetEnemy();
+        if (_movingAudioSource != null)
+        {
+            _movingAudioSource.Stop();
+        }
+    }
+
+    public override void Show()
+    {
+        base.Show();
+        _movingAudioSource.Play();
     }
 }
