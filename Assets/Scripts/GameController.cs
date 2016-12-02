@@ -49,6 +49,11 @@ public class GameController : ITickable
         _levelGenerator.CloseDoors();
         // TODO: Redo this
         IsRunning = false;
+        foreach(var gameOverBox in GameObject.FindGameObjectsWithTag("GameOverCanvas"))
+        {
+            Debug.Log(gameOverBox);
+            gameOverBox.SetActive(false);
+        }
     }
    
     public void StartGame() {

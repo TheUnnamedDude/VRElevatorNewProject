@@ -18,6 +18,7 @@ public class DependencyInstaller : MonoInstaller<DependencyInstaller>
         Container.Bind<ITickable>().To<ScoreManager>().AsSingle();
         Container.Bind<LevelGenerator>().FromNew().AsSingle();
         Container.BindAllInterfaces<LevelGenerator>().To<LevelGenerator>().AsSingle();
+        Container.Bind<GameObject[]>().WithId("GameOverBoxes").FromInstance(_settings.GameOverBoxes);
     }
 
     [Serializable]
@@ -25,6 +26,7 @@ public class DependencyInstaller : MonoInstaller<DependencyInstaller>
     {
         public GameObject Elevator;
         public GameObject Scene;
+        public GameObject[] GameOverBoxes;
     }
 
 }

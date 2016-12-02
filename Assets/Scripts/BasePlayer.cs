@@ -41,7 +41,8 @@ public class BasePlayer : MonoBehaviour
     {
         currentEnergy = maxEnergy;
         Lazer = GetComponent<LineRenderer>();
-        Lazer.SetWidth(0.01f, 0.01f);
+        Lazer.startWidth = 0.01f;
+        Lazer.endWidth = 0.01f;
     }
 
 
