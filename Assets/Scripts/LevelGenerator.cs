@@ -79,7 +79,7 @@ public class LevelGenerator : ITickable
 
     public void Tick()
     {
-        if (_scoreManager.Freezed || _spawnTime.IsEmpty())
+        if (_scoreManager.Freezed || _scoreManager.TimeElapsedForLevel > 0 || _spawnTime.IsEmpty())
             return;
         _spawnTime
             .Where(e => !e.Enemy.Alive && e.SpawnTime <= _scoreManager.TimeElapsedForLevel)
