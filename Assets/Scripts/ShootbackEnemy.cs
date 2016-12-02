@@ -40,8 +40,7 @@ public class ShootbackEnemy : Enemy
     }
     private void ShootProjectile()
     {
-        GameObject projectile = (GameObject) Instantiate(Projectile, Missileport.transform.position, gameObject.transform.rotation, transform);
-        Debug.Log("Rockets AWAAAAAAY!");
+        var projectile = (GameObject) Instantiate(Projectile, Missileport.transform.position, gameObject.transform.rotation, transform);
         projectile.transform.LookAt(_target.transform.position);
         projectile.GetComponent<ProjectileFromShootbackTarget>().ShootAt(_target.transform.position);
     }

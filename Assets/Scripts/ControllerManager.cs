@@ -73,6 +73,7 @@ public class ControllerManager : BasePlayer
             }
             if (touchPoint.x < 0.5f && touchPoint.x > -0.5f)
             {
+                _gunDisplay.HandleAction();
                 return;
             }
 

@@ -22,7 +22,7 @@ public class ProjectileFromShootbackTarget : MonoBehaviour, Shootable
             gameObject.transform.position = Vector3.MoveTowards(gameObject.transform.position, _target, step);
             if (gameObject.transform.position == _target) //TODO: Add logic for if hit targetPath
             {
-                //reduce time left by 5 sec on stage
+                Destroy(gameObject);
             }
         }
     }

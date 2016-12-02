@@ -20,7 +20,7 @@ public class ScoreManager : ITickable
     public float TimeLeft
     {
         get { return _timeLimit - _timeElapsed; }
-        set { _timeElapsed = TimeLeft - value; }
+        set { _timeElapsed += TimeLeft - value; }
     }
 
     public bool GameOver { get { return TimeLeft <= 0; }}

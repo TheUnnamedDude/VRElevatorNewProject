@@ -1,8 +1,6 @@
 ﻿using UnityEngine;
-using System.Collections;
 using Zenject;
 using UnityEngine.UI;
-using System;
 
 public class MenuHandler : MonoBehaviour {
 

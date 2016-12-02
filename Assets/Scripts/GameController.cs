@@ -23,6 +23,7 @@ public class GameController : ITickable
         {
             // TODO: Redo this
             IsRunning = false;
+            Debug.Log("Is game over yes hello");
         }
         if (_slowMotionTimeLeft <= 0)
         {

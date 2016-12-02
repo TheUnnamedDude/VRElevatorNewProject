@@ -1,6 +1,4 @@
-﻿using System;
-
-interface Shootable
+﻿interface Shootable
 {
     void OnHit(float damage);
 }
