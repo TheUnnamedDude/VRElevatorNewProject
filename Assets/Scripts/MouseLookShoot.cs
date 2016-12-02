@@ -27,12 +27,12 @@ public class MouseLookShoot : BasePlayer
         SetFiringMode();
         SetValuesByFiringMode(FiringMode);
 
-        if (currentEnergy < maxEnergy && !isFiring)
+        if (currentEnergy < maxEnergy && !IsFiring)
         {
             currentEnergy += ChargeSpeed * Time.deltaTime;
         }
 
-        Lazer.enabled = isFiring;
+        Lazer.enabled = IsFiring;
         
 
         if (!FullAuto)
@@ -46,12 +46,12 @@ public class MouseLookShoot : BasePlayer
         {
             if (Input.GetMouseButtonDown(0))
             {
-                isFiring = true;
+                IsFiring = true;
                 StartCoroutine(Auto());
             }
             if (Input.GetMouseButtonUp(0))
             {
-                isFiring = false;
+                IsFiring = false;
             }
         }
 
@@ -88,6 +88,4 @@ public class MouseLookShoot : BasePlayer
             _gunDisplay.HandleAction();
         }
     }
-
-
 }

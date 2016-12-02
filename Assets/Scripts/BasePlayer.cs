@@ -23,17 +23,25 @@ public class BasePlayer : MonoBehaviour
     public float ChargeSpeed = 20f;
     public float currentEnergy;
     public float energyDecrease;
-    public bool isFiring = false;
+    private bool _isFiring;
+
+    public bool IsFiring
+    {
+        get { return _isFiring; }
+        set
+        {
+            _isFiring = value;
+            Lazer.enabled = value;
+        }
+    }
 
     public LineRenderer Lazer;
-    Ray ray;
 
     public void Start()
     {
         currentEnergy = maxEnergy;
         Lazer = GetComponent<LineRenderer>();
         Lazer.SetWidth(0.01f, 0.01f);
-        Lazer.enabled = false;
     }
 
 
@@ -41,6 +49,26 @@ public class BasePlayer : MonoBehaviour
     {
         if (_lastShot < RecoilTime)
             _lastShot += Time.deltaTime;
+        if (IsFiring)
+        {
+            UpdateLaserPosition();
+        }
+    }
+
+    public void UpdateLaserPosition()
+    {
+        var ray = new Ray(BarrelOpening.position, BarrelOpening.forward);
+        Lazer.SetPosition(0, ray.origin);
+
+        RaycastHit hit;
+        if (Physics.Raycast(ray, out hit))
+        {
+            Lazer.SetPosition(1, hit.point);
+        }
+        else
+        {
+            Lazer.SetPosition(1, ray.GetPoint(100));
+        }
     }
 
     public void ShootBullet()
@@ -49,15 +77,10 @@ public class BasePlayer : MonoBehaviour
             return;
 
         currentEnergy -= energyDecrease;
-        ray = new Ray(BarrelOpening.position, BarrelOpening.forward);
-        Lazer.SetPosition(0, ray.origin);
-        
         RaycastHit hit;
-        if (Physics.Raycast(ray, out hit))
+        if (Physics.Raycast(BarrelOpening.position, BarrelOpening.TransformDirection(Vector3.forward), out hit))
         {
-            Lazer.SetPosition(1, hit.point);
             var shootable = GetShootable(hit.collider.transform);
-            Debug.Log(shootable);
             if (FiringMode != 3)
             {
                 if (shootable != null)
@@ -69,9 +92,6 @@ public class BasePlayer : MonoBehaviour
             {
                 Instantiate(ExplosionSphere, new Vector3(hit.point.x, hit.point.y, hit.point.z), Quaternion.identity);
             }
-        }
-        else {
-            Lazer.SetPosition(1, ray.GetPoint(100));
         }
     }
 
@@ -142,26 +162,22 @@ public class BasePlayer : MonoBehaviour
         {
             if (energyDecrease < currentEnergy)
             {
-                isFiring = true;
+                IsFiring = true;
                 for (int i = 0; i < FiringCycle; i++)
                 {
-                    //Lazer.enabled = true;
                     ShootBullet();
                     yield return new WaitForSeconds(RecoilTime);
                 }
-                //Lazer.enabled = false;
-                isFiring = false;
+                IsFiring = false;
             }
         }
     }
     public IEnumerator Auto()
     {
-        //Lazer.enabled = true;
-        while (energyDecrease < currentEnergy && isFiring)
+        while (energyDecrease < currentEnergy && IsFiring)
         {
             ShootBullet();
             yield return new WaitForSeconds(RecoilTime);
         }
-        //Lazer.enabled = false;
-     }
+    }
 }

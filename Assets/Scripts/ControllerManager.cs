@@ -24,13 +24,13 @@ public class ControllerManager : BasePlayer
     // Update is called once per frame
     void Update()
     {
-        Lazer.enabled = isFiring;
+        Lazer.enabled = IsFiring;
         UpdateRecoilTime();
 
         SetFiringMode();
         SetValuesByFiringMode(FiringMode);
 
-        if (currentEnergy < maxEnergy && !isFiring)
+        if (currentEnergy < maxEnergy && !IsFiring)
         {
             currentEnergy += ChargeSpeed * Time.deltaTime;
         }
@@ -39,7 +39,7 @@ public class ControllerManager : BasePlayer
         {
             if (FullAuto)
             {
-                isFiring = true;
+                IsFiring = true;
                 StartCoroutine(Auto());
                 _audio.PlayOneShot(Shot, 1f);
                 device.TriggerHapticPulse(3999);
@@ -55,7 +55,7 @@ public class ControllerManager : BasePlayer
         }
         else if (device.GetPressUp(SteamVR_Controller.ButtonMask.Trigger))
         {
-            isFiring = false;
+            IsFiring = false;
         }
 
         CheckTouchpad();
