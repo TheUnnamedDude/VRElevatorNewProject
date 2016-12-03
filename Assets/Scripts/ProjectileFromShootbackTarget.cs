@@ -5,9 +5,10 @@ using Zenject;
 public class ProjectileFromShootbackTarget : MonoBehaviour, Shootable
 {
     private bool _shot;
-    public float speed = 5;
+    public float speed = 8;
     public Vector3 _target;
     public AudioSource LoopingProjectileSound;
+    public Transform Explosion;
 
     void Start()
     {
@@ -34,6 +35,8 @@ public class ProjectileFromShootbackTarget : MonoBehaviour, Shootable
 
     public void OnHit(float damage)
     {
+        Debug.Log("Rocket shot");
+        Instantiate(Explosion, transform.position, Quaternion.identity);
         Destroy(gameObject);
     }
 }

@@ -3,7 +3,7 @@ using Zenject;
 
 public class ScoreManager : ITickable
 {
-    public float InitialStartTime = 15f;
+    public float InitialStartTime = 30f;
     private float _timeScore;
     private float _targetScore;
     private float _timeElapsed;
@@ -90,7 +90,7 @@ public class ScoreManager : ITickable
     /// <returns>A float representing the time you gained in seconds</returns>
     private float GetTimeForLevel(int numberOfEnemies)
     {
-        return 0.5f * numberOfEnemies + 15;
+        return 0.5f * numberOfEnemies + 10;
     }
 
     public void Reset()

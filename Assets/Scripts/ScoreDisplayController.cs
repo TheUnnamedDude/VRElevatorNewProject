@@ -21,7 +21,6 @@ public class ScoreDisplayController : MonoBehaviour {
 
     void Update() {
         UpdateScoreboardText();
-        Debug.Log(_gameController.IsRunning);
     }
 
     public void UpdateScoreboardText() {

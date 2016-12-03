@@ -114,9 +114,6 @@ public class GunDisplay : MonoBehaviour {
                     MenuText.text = "Restart";
                     break;
                 case 2:
-                    MenuText.text = "Help";
-                    break;
-                case 3:
                     MenuText.text = "Quit";
                     break;
             }
@@ -139,13 +136,13 @@ public class GunDisplay : MonoBehaviour {
 
     public void ChangeMenuAction()
     {
-        if(MenuAction > 3)
+        if(MenuAction > 2)
         {
             MenuAction = 0;
         }
         if(MenuAction < 0)
         {
-            MenuAction = 3;
+            MenuAction = 2;
         }
         UpdateGunDisplay();
     }
@@ -160,7 +157,7 @@ public class GunDisplay : MonoBehaviour {
             case 1:
                 _gameController.Restart();
                 return;
-            case 3:
+            case 2:
                 Application.Quit();
                 return;
         }
@@ -178,10 +175,7 @@ public class GunDisplay : MonoBehaviour {
             case 0:
                 _gameController.StartGame();
                 return;
-            case 2:
-
-                /*helpCanvas.SetActive(!helpCanvas.activeSelf);*/
-                return;
+           
         }
     }
 

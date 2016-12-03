@@ -153,21 +153,21 @@ public class LevelGenerator : ITickable
         }
         if (level < 10)
         {
-            return _rng.Next(3, 5);
+            return _rng.Next(5, 10);
         }
         if (level < 20)
         {
-            return _rng.Next(3, 10);
+            return _rng.Next(15, 25);
         }
         if (level < 25)
         {
-            return _rng.Next(10, 20);
+            return _rng.Next(25, 30);
         }
         if (level < 30)
         {
-            return _rng.Next(15, 30);
+            return _rng.Next(30, 40);
         }
-        return level < 40 ? _rng.Next(25, 40) : 40;
+        return level < 40 ? _rng.Next(40, 50) : 50;
     }
 
     private int GetElevatorSidesForLevel(int level)
