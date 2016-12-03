@@ -35,7 +35,6 @@ public class Enemy : MonoBehaviour, Shootable
         _ignoreRaycast = LayerMask.NameToLayer("Ignore Raycast");
         _audioSources = GetComponents<AudioSource>();
         MainAudioSource = NextAudioSource();
-        ResetEnemy();
     }
 
     public virtual void Update()
@@ -95,28 +94,12 @@ public class Enemy : MonoBehaviour, Shootable
     {
         Alive = false;
         _health = MaxHealth;
-        foreach (var rendr in _renderers)
-        {
-            rendr.enabled = false;
-        }
-        gameObject.layer = _ignoreRaycast;
-        foreach (Transform child in transform)
-        {
-            child.gameObject.layer = _ignoreRaycast;
-        }
+        gameObject.SetActive(false);
     }
     public virtual void Show()
     {
-        foreach (var rendr in _renderers)
-        {
-            rendr.enabled = true;
-        }
+        gameObject.SetActive(true);
         Alive = true;
-        gameObject.layer = _defaultLayer;
-        foreach (Transform child in transform)
-        {
-            child.gameObject.layer = _defaultLayer;
-        }
         GetComponentInChildren<Animator>().SetBool("Dead", false);
         _animationElapsed = AnimationTime;
         _animationStarted = true;
