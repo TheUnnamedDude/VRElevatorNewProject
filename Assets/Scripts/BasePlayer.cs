@@ -23,6 +23,9 @@ public class BasePlayer : MonoBehaviour
     public float ChargeSpeed = 20f;
     public float currentEnergy;
     public float energyDecrease;
+
+    public AudioClip Shot;
+    public AudioSource MainAudioSource { get; private set; }
     private bool _isFiring;
 
     public bool IsFiring
@@ -35,10 +38,11 @@ public class BasePlayer : MonoBehaviour
         }
     }
 
-    public LineRenderer Lazer;
+    public LineRenderer Lazer { get; private set; }
 
-    public void Start()
+    public virtual void Start()
     {
+        MainAudioSource = GetComponent<AudioSource>();
         currentEnergy = maxEnergy;
         Lazer = GetComponent<LineRenderer>();
         Lazer.startWidth = 0.01f;
@@ -159,18 +163,16 @@ public class BasePlayer : MonoBehaviour
     }
     public IEnumerator Burst()
     {
-        if (!FullAuto)
+        if (energyDecrease < currentEnergy)
         {
-            if (energyDecrease < currentEnergy)
+            IsFiring = true;
+            for (var i = 0; i < FiringCycle; i++)
             {
-                IsFiring = true;
-                for (int i = 0; i < FiringCycle; i++)
-                {
-                    ShootBullet();
-                    yield return new WaitForSeconds(RecoilTime);
-                }
-                IsFiring = false;
+                MainAudioSource.PlayOneShot(Shot);
+                ShootBullet();
+                yield return new WaitForSeconds(RecoilTime);
             }
+            IsFiring = false;
         }
     }
     public IEnumerator Auto()

@@ -7,15 +7,10 @@ public class ControllerManager : BasePlayer
     private SteamVR_Controller.Device device;
     private GunDisplay _gunDisplay;
 
-    public AudioClip Shot;
-    public AudioClip Cock;
-    private AudioSource _audio;
-
     // Use this for initialization
-    void Start()
+    public override void Start()
     {
         _trackedObject = GetComponent<SteamVR_TrackedObject>();
-        _audio = GetComponent<AudioSource>();
         _gunDisplay = GetComponentInChildren<GunDisplay>();
         device = SteamVR_Controller.Input((int)_trackedObject.index);
         base.Start();
@@ -40,16 +35,12 @@ public class ControllerManager : BasePlayer
             if (FullAuto)
             {
                 StartCoroutine(Auto());
-                _audio.PlayOneShot(Shot, 1f);
                 device.TriggerHapticPulse(3999);
-                GetComponent<AudioSource>().PlayOneShot(Cock, 1f);
             }
             else
             {
                 StartCoroutine(Burst());
-                _audio.PlayOneShot(Shot, 1f);
                 device.TriggerHapticPulse(3999);
-                GetComponent<AudioSource>().PlayOneShot(Cock, 1f);
             }
         }
         else if (device.GetPressUp(SteamVR_Controller.ButtonMask.Trigger))

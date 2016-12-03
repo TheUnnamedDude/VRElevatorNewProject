@@ -10,7 +10,6 @@ public class Enemy : MonoBehaviour, Shootable
     public float AnimationTime;
     public int MinSpawnLevel;
     public AudioClip SpawnSound;
-    public AudioClip OnHitClip;
     public AudioClip ImpactClip;
 
     private float _animationElapsed;
@@ -72,7 +71,6 @@ public class Enemy : MonoBehaviour, Shootable
         if (_health > 0)
             return;
         OnKill();
-        MainAudioSource.PlayOneShot(OnHitClip);
     }
 
     public virtual void OnKill()

@@ -42,35 +42,18 @@ public class LevelGenerator : ITickable
     {
         get
         {
-            var count = 0;
-            foreach (var enemies in _enemies.Values)
-            {
-                foreach (var enemy in enemies)
-                {
-                    if (enemy.Alive)
-                    {
-                        count++;
-                    }
-                }
-            }
-            return count;
+            return _enemies.Values.SelectMany(enemies => enemies).Count(enemy => enemy.Alive);
         }
     }
 
     public void InitializeGame()
     {
-        foreach (var direction in ALL_DIRECTIONS)
+        ALL_DIRECTIONS.ForEach(direction => _enemies[direction] = new List<Enemy>());
+        UnityObject.FindObjectsOfType<Enemy>().Where(enemy =>
         {
-            _enemies[direction] = new List<Enemy>();
-        }
-        foreach (var enemy in UnityObject.FindObjectsOfType<Enemy>())
-        {
-            if (!_enemies.ContainsKey(enemy.Direction)) {
-                Debug.LogWarning("Unmapped direction on enemy " + enemy);
-                continue;
-            }
-            _enemies[enemy.Direction].Add(enemy);
-        }
+            Debug.LogWarning("Unmapped direction for enemy " + enemy);
+            return _enemies.ContainsKey(enemy.Direction);
+        }).ForEach(enemy => _enemies[enemy.Direction].Add(enemy));
         _doors.AddRange(UnityObject.FindObjectsOfType<Door>());
         Reset();
         FinishLevel();
@@ -159,14 +142,7 @@ public class LevelGenerator : ITickable
 
     private Door GetDoorByDirection(ElevatorDirection direction)
     {
-        foreach (var door in _doors)
-        {
-            if (door.Direction == direction)
-            {
-                return door;
-            }
-        }
-        return null;
+        return _doors.FirstOrDefault(door => door.Direction == direction);
     }
 
     private int GetTargetSpawnsForLevel(int level)
