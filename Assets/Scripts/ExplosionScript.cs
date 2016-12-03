@@ -5,12 +5,14 @@ public class ExplosionScript : MonoBehaviour
 {
 
     public float TimeToLive = 0.3f;
-
+    private AudioSource audiosource;
+    public AudioClip clip;
     private float _timeLived;
     // Use this for initialization
     void Start()
     {
-
+        audiosource = GetComponent<AudioSource>();
+        audiosource.playOnAwake = true;
     }
 
 

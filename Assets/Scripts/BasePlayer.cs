@@ -25,6 +25,7 @@ public class BasePlayer : MonoBehaviour
     public float energyDecrease;
 
     public AudioClip Shot;
+    public AudioClip AutoSound;
     public AudioSource MainAudioSource { get; private set; }
     private bool _isFiring;
 
@@ -168,7 +169,10 @@ public class BasePlayer : MonoBehaviour
             IsFiring = true;
             for (var i = 0; i < FiringCycle; i++)
             {
-                MainAudioSource.PlayOneShot(Shot);
+                if(FiringMode != 3)
+                {
+                    MainAudioSource.PlayOneShot(Shot);
+                }
                 ShootBullet();
                 yield return new WaitForSeconds(RecoilTime);
             }
@@ -178,12 +182,17 @@ public class BasePlayer : MonoBehaviour
     public IEnumerator Auto()
     {
         IsFiring = true;
+        MainAudioSource.clip = AutoSound;
+        MainAudioSource.Play();
         while (IsFiring)
         {
+            
             if (currentEnergy < energyDecrease)
                 IsFiring = false;
             ShootBullet();
             yield return new WaitForSeconds(RecoilTime);
         }
+        MainAudioSource.clip = Shot;
+        MainAudioSource.Stop();
     }
 }
