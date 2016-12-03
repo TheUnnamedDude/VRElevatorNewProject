@@ -21,6 +21,7 @@ public class GameController : ITickable
         private set;
     }
 
+
     public void Tick ()
     {
         if (_scoreManager.GameOver && IsRunning)
@@ -51,10 +52,6 @@ public class GameController : ITickable
         _levelGenerator.CloseDoors();
         // TODO: Redo this
         IsRunning = false;
-        foreach(var gameOverBox in _gameOverBoxes)
-        {
-            gameOverBox.SetActive(true);
-        }
     }
 
     public void StartGame() {

@@ -9,6 +9,7 @@ public class GunDisplay : MonoBehaviour {
     [Inject]
     private GameController _gameController;
 
+
     private BasePlayer _basePlayer;
     public int MenuAction;
     public GameObject helpCanvas;
@@ -178,7 +179,8 @@ public class GunDisplay : MonoBehaviour {
                 _gameController.StartGame();
                 return;
             case 2:
-                helpCanvas.SetActive(!helpCanvas.activeSelf);
+
+                /*helpCanvas.SetActive(!helpCanvas.activeSelf);*/
                 return;
         }
     }

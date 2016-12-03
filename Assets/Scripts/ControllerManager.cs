@@ -42,6 +42,10 @@ public class ControllerManager : BasePlayer
                 StartCoroutine(Burst());
                 device.TriggerHapticPulse(3999);
             }
+            if(!_gunDisplay.GunMode)
+            {
+                _gunDisplay.HandleAction();
+            }
         }
         else if (device.GetPressUp(SteamVR_Controller.ButtonMask.Trigger))
         {
