@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 public class MovingEnemy : Enemy
 {
@@ -28,7 +29,11 @@ public class MovingEnemy : Enemy
     public override void Update()
     {
         base.Update();
-        if (Alive && IsAnimationRunning()) {
+        if (Alive && !IsAnimationRunning()) {
+            if (!_movingAudioSource.isPlaying)
+            {
+                _movingAudioSource.Play();
+            }
             Movement();
         }
     }
@@ -54,18 +59,12 @@ public class MovingEnemy : Enemy
         }
     }
 
-    public override void ResetEnemy()
+    public override void OnHit(float value)
     {
-        base.ResetEnemy();
+        base.OnHit(value);
         if (_movingAudioSource != null)
         {
             _movingAudioSource.Stop();
         }
-    }
-
-    public override void Show()
-    {
-        base.Show();
-        _movingAudioSource.Play();
     }
 }

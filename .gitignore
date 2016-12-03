@@ -33,3 +33,5 @@ sysinfo.txt
 # Project Rider
 .idea/
 
+# Project rider plugin
+/Assets/Plugins

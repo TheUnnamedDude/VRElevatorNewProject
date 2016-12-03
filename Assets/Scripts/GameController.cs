@@ -1,5 +1,4 @@
-﻿using UnityEditor.MemoryProfiler;
-using UnityEngine;
+﻿using UnityEngine;
 using UnityEngine.SceneManagement;
 using Zenject;
 
@@ -10,7 +9,10 @@ public class GameController : ITickable
 
     [Inject]
     private LevelGenerator _levelGenerator;
-    
+
+    [Inject(Id = "GameOverBoxes")]
+    private GameObject[] _gameOverBoxes;
+
     private float _slowMotionTimeLeft;
 
     public bool IsRunning
@@ -40,7 +42,7 @@ public class GameController : ITickable
         }
         foreach (var enemy in Object.FindObjectsOfType<Enemy>())
         {
-            enemy.Kill();
+            enemy.OnKill();
         }
         foreach (var controller in Object.FindObjectsOfType<GunDisplay>())
         {
@@ -49,13 +51,12 @@ public class GameController : ITickable
         _levelGenerator.CloseDoors();
         // TODO: Redo this
         IsRunning = false;
-        foreach(var gameOverBox in GameObject.FindGameObjectsWithTag("GameOverCanvas"))
+        foreach(var gameOverBox in _gameOverBoxes)
         {
-            Debug.Log(gameOverBox);
-            gameOverBox.SetActive(false);
+            gameOverBox.SetActive(true);
         }
     }
-   
+
     public void StartGame() {
         IsRunning = true;
         _levelGenerator.InitializeGame();
@@ -80,8 +81,7 @@ public class GameController : ITickable
         {
             return;
         }
-        _scoreManager.AddTargetScore(points); // TODO: Pass target type
-        Debug.Log(_levelGenerator.NumberOfTargetsAlive);
+        _scoreManager.AddTargetScore(points);
         if (_levelGenerator.NumberOfTargetsAlive <= 0)
         {
             _levelGenerator.FinishLevel();

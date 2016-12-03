@@ -10,6 +10,8 @@ public class Enemy : MonoBehaviour, Shootable
     public float AnimationTime;
     public int MinSpawnLevel;
     public AudioClip SpawnSound;
+    public AudioClip OnHitClip;
+    public AudioClip ImpactClip;
 
     private float _animationElapsed;
     private int _defaultLayer;
@@ -17,6 +19,7 @@ public class Enemy : MonoBehaviour, Shootable
     private bool _animationStarted;
     private AudioSource[] _audioSources;
     private int _audioSourceIndex;
+    private bool _deathAnimation;
 
     public AudioSource MainAudioSource { private set; get; }
 
@@ -41,9 +44,9 @@ public class Enemy : MonoBehaviour, Shootable
         if (!_animationStarted)
             return;
 
-        _animationElapsed += Time.deltaTime;
+        _animationElapsed -= Time.deltaTime;
 
-        if (_animationElapsed <= AnimationTime)
+        if (_animationElapsed >= 0)
             return;
 
         _animationStarted = false;
@@ -51,8 +54,13 @@ public class Enemy : MonoBehaviour, Shootable
 
         if (Alive)
             return;
-        ResetEnemy();
-        _gameController.OnTargetDestroy(20f);
+        if (_deathAnimation)
+        {
+            MainAudioSource.PlayOneShot(ImpactClip);
+            ResetEnemy();
+            _gameController.OnTargetDestroy(20f);
+            _deathAnimation = false;
+        }
     }
 
 
@@ -63,16 +71,19 @@ public class Enemy : MonoBehaviour, Shootable
         _health -= damage;
         if (_health > 0)
             return;
-        Kill();
+        OnKill();
+        MainAudioSource.PlayOneShot(OnHitClip);
     }
 
-    public void Kill()
+    public virtual void OnKill()
     {
         if (!Alive)
             return;
         _animationStarted = true;
         // Run animation then reset
         Alive = false;
+        _deathAnimation = true;
+        _animationElapsed = AnimationTime / 2f;
         GetComponentInChildren<Animator>().SetBool("Dead", true);
     }
 
@@ -109,6 +120,8 @@ public class Enemy : MonoBehaviour, Shootable
             child.gameObject.layer = _defaultLayer;
         }
         GetComponentInChildren<Animator>().SetBool("Dead", false);
+        _animationElapsed = AnimationTime;
+        _animationStarted = true;
         if (MainAudioSource != null && SpawnSound != null)
         {
             MainAudioSource.PlayOneShot(SpawnSound);

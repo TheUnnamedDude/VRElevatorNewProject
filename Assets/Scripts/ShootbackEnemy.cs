@@ -41,9 +41,19 @@ public class ShootbackEnemy : Enemy
             LockOnTargetSound();
         }
     }
+
+    public override void OnKill()
+    {
+        base.OnKill();
+        foreach (var projectile in GetComponentsInChildren<ProjectileFromShootbackTarget>())
+        {
+            Destroy(projectile.gameObject);
+        }
+    }
+
     private void ShootProjectile()
     {
-        var projectile = (GameObject) Instantiate(Projectile, Missileport.transform.position, gameObject.transform.rotation, transform);
+        var projectile = Instantiate(Projectile, Missileport.transform.position, gameObject.transform.rotation, transform);
         projectile.transform.LookAt(_target.transform.position);
         projectile.GetComponent<ProjectileFromShootbackTarget>().ShootAt(_target.transform.position);
     }

@@ -7,11 +7,14 @@ public class Door : MonoBehaviour
     public float AnimationTime;
     public float OpeningTimeOffset;
     public float ClosingTimeOffset;
+    public AudioClip OpenClip;
+    public AudioClip CloseClip;
 
     private bool _open;
     private bool _opening;
     private bool _closing;
     private float _timeElapsed;
+    private AudioSource _audioSource;
 
     public bool Open
     {
@@ -19,6 +22,20 @@ public class Door : MonoBehaviour
         set
         {
             _open = value;
+            if (_open)
+            {
+                if (OpenClip != null)
+                {
+                    _audioSource.PlayOneShot(OpenClip);
+                }
+            }
+            else
+            {
+                if (CloseClip != null)
+                {
+                    _audioSource.PlayOneShot(CloseClip);
+                }
+            }
             _animator.SetBool("DoorOpen", _open);
         }
     }
@@ -26,12 +43,8 @@ public class Door : MonoBehaviour
 	void Awake ()
 	{
 	    _animator = GetComponent<Animator>();
+	    _audioSource = GetComponent<AudioSource>();
 	}
-
-    void Start()
-    {
-
-    }
 
     void Update()
     {
